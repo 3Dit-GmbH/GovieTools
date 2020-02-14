@@ -1,6 +1,1 @@
-- animation panel should only show visible objects
-
-- order panels
-- hide animation,annotation
-- show visibility, glb export
-
+- help properties should influcene themseleves
