@@ -128,7 +128,14 @@ class GOVIE_Remove_Property_Operator(bpy.types.Operator):
 class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
     bl_idname = "scene.gltf_quick_export"
     bl_label = "EXPORT_GLTF"
-    bl_description = "GLB File will be saved to 'pathOfBlendFile/glb/filename.glb'"
+    bl_description = "Save Blender file to use this button ! The GLB file will be saved to 'pathOfBlendFile/glb/filename.glb'"
+
+    @classmethod
+    def poll(cls, context):
+        if bpy.data.is_saved:
+            return True
+        else:
+            return False
 
     def execute(self, context):
         # blender file saved 
