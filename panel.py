@@ -32,8 +32,8 @@ bpy.utils.register_class(Export_Settings)
 bpy.types.Scene.export_settings = PointerProperty(type=Export_Settings)
 bpy.types.Scene.object_index = IntProperty(name = "Index for Visibility UI List", default = 0,update=updateSelItem)
 bpy.types.Object.visibiliy_bool = BoolProperty(name = "Mapping for Property Value", default = 0,update=remapVisProp)
-# bpy.types.Scene.export_settings.glb_filename = StringProperty(name="Filename",default="filename")   
 bpy.types.Scene.open_verification_menu = BoolProperty(default=False)
+
 
 def run_help_operator(self,context):
    bpy.ops.scene.help_govie(image_name ="help_overlay_govie_tools.png" )
@@ -226,7 +226,7 @@ class GLBExportPanel(bpy.types.Panel):
         layout = self.layout
         scene = context.scene
 
-        layout.prop(scene,"open_verification_menu",text="Verification", icon = 'TRIA_DOWN' if scene.open_sel_mat_menu else 'TRIA_RIGHT' )
+        layout.prop(scene,"open_verification_menu",text="Verification", icon = 'TRIA_DOWN' if scene.open_verification_menu else 'TRIA_RIGHT' )
         if scene.open_verification_menu:
             mat_name_list = context.scene.mat_name_list
 
