@@ -19,6 +19,13 @@ class Export_Settings(bpy.types.PropertyGroup):
     export_lights: BoolProperty(default = False)
     export_animations: BoolProperty(default = True)
     apply_modifiers: BoolProperty(default = False)
+    export_image_format: bpy.props.EnumProperty(
+        name="Image Compression",
+        items=(
+               ('AUTO', 'Automatic', 'Determine the image format from the blender image name.'),
+               ('JPEG', 'JPEG', 'Convert Images to JPEG, images with alpha still use PNG'),
+               ('PNG', 'PNG', 'Convert Images to PNG'),
+            ))
     use_draco: BoolProperty(default = True)
     draco_compression_level: IntProperty(default = 6)
     postion_quantization: IntProperty(default = 14,min=0,max=30)
@@ -243,14 +250,15 @@ class GLBExportPanel(bpy.types.Panel):
         layout.prop(scene.export_settings,"open_export_settings_menu",text="Export Settings", icon = 'TRIA_DOWN' if scene.export_settings.open_export_settings_menu else 'TRIA_RIGHT' )
         if scene.export_settings.open_export_settings_menu:
             box = layout.box()
-            box.label(text="Scene")
+            box.label(text="SCENE")
             box.prop(scene.export_settings,"export_selected",text="Selected Only", toggle = True, icon="RESTRICT_SELECT_OFF")
             box.prop(scene.export_settings,"export_lights",text="Include Lights", toggle = True, icon="LIGHT")
             box.prop(scene.export_settings,"export_animations",text="Include Animation", toggle = True, icon="RENDER_ANIMATION")
             box.prop(scene.export_settings,"apply_modifiers",text="Apply Modifiers", toggle = True, icon="MODIFIER")
 
 
-            box.label(text="Compression")
+            box.label(text="COMPRESSION")
+            box.prop(scene.export_settings,"export_image_format",text="Image Format")
             box.prop(scene.export_settings,"use_draco",text="Use Draco", toggle = True)
             row = box.row()
             if scene.export_settings.use_draco:
