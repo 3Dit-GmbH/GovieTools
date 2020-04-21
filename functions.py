@@ -22,7 +22,8 @@ def start_server(server_path,file_path):
 
 def stop_server():
     global server_process 
-    print("Closed process " + str(server_process.pid))
-    server_process.kill()
+    if server_process is not None:
+        print("Closed process " + str(server_process.pid))
+        server_process.kill()
 
 atexit.register(stop_server)
