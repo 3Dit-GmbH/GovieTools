@@ -153,6 +153,8 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
         export_lights = context.scene.export_settings.export_lights
         export_animations = context.scene.export_settings.export_animations
         apply_modifiers = context.scene.export_settings.apply_modifiers
+        use_sampling = context.scene.export_settings.use_sampling
+        group_by_nla = context.scene.export_settings.group_by_nla
         use_draco = context.scene.export_settings.use_draco
         export_image_format = context.scene.export_settings.export_image_format
         draco_compression_level = context.scene.export_settings.draco_compression_level
@@ -175,7 +177,9 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
                                     export_lights=export_lights,
                                     export_animations=export_animations,
                                     export_apply=apply_modifiers,
-                                    export_image_format=export_image_format)
+                                    export_image_format=export_image_format,
+                                    export_nla_strips=group_by_nla,
+                                    export_force_sampling=use_sampling)
         else:
             self.report({'INFO'}, 'You need to save Blend file first !')
 
