@@ -10,7 +10,8 @@ def updateSelItem(self,value):
     
 def remapVisProp(self,value):
     context = value
-    context.object["visibility"] = context.object.visibiliy_bool
+    if (context.object["visibility"]):
+        context.object["visibility"] = context.object.visibiliy_bool
 
 class Export_Settings(bpy.types.PropertyGroup):  
     open_export_settings_menu: BoolProperty(default = False)    
@@ -128,7 +129,7 @@ class VIS_UL_List(bpy.types.UIList):
         
         selOff = 'RADIOBUT_OFF'
         selOn = 'RADIOBUT_ON'
-                        
+
         # 'DEFAULT' and 'COMPACT' layout types should usually use the same draw code.
         if self.layout_type in {'DEFAULT', 'COMPACT'}:        
             
@@ -145,8 +146,8 @@ class VIS_UL_List(bpy.types.UIList):
                     split = split.split(factor=0.6)
                     split.label(text=item.name)  
 
-            split = split.split(factor=1)
-            split.prop(item, 'visibiliy_bool',text="")
+                split = split.split(factor=1)
+                split.prop(item, 'visibiliy_bool',text="")
 
     def filter_items(self, context, data, propname):
         objects = getattr(data, propname)
