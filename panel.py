@@ -5,12 +5,12 @@ from bpy.props import StringProperty,BoolProperty,IntProperty,PointerProperty
 
 def updateSelItem(self,value):
     scene = self
-    selListObj = scene.objects[scene.object_index]
-    select_object(selListObj)
+    list_object = scene.objects[scene.object_index]
+    select_object(list_object)
     
 def remapVisProp(self,value):
     context = value
-    if (context.object["visibility"]):
+    if (context.object.get('visibility') is not None):
         context.object["visibility"] = context.object.visibiliy_bool
 
 class Export_Settings(bpy.types.PropertyGroup):  
@@ -25,12 +25,12 @@ class Export_Settings(bpy.types.PropertyGroup):
     apply_modifiers: BoolProperty(default = False)
     use_sampling:BoolProperty(default = False)
     group_by_nla:BoolProperty(default = True)
+    export_all_influences:BoolProperty(default = False)
     export_image_format: bpy.props.EnumProperty(
         name="Image Compression",
         items=(
                ('AUTO', 'Automatic', 'Determine the image format from the blender image name.'),
-               ('JPEG', 'JPEG', 'Convert Images to JPEG, images with alpha still use PNG'),
-               ('PNG', 'PNG', 'Convert Images to PNG'),
+               ('JPEG', 'JPEG', 'Convert Images to JPEG, images with alpha still use PNG')
             ))
     use_draco: BoolProperty(default = True)
     draco_compression_level: IntProperty(default = 6)
@@ -43,8 +43,8 @@ class Export_Settings(bpy.types.PropertyGroup):
 bpy.utils.register_class(Export_Settings)
 
 bpy.types.Scene.export_settings = PointerProperty(type=Export_Settings)
-bpy.types.Scene.object_index = IntProperty(name = "Index for Visibility UI List", default = 0,update=updateSelItem)
-bpy.types.Object.visibiliy_bool = BoolProperty(name = "Mapping for Property Value", default = 0,update=remapVisProp)
+bpy.types.Scene.object_index = IntProperty(name = "Index for Visibility UI List", update=updateSelItem)
+bpy.types.Object.visibiliy_bool = BoolProperty(name = "Mapping for Property Value", update=remapVisProp)
 bpy.types.Scene.open_verification_menu = BoolProperty(default=False)
 
 
@@ -288,8 +288,12 @@ class GLBExportPanel(bpy.types.Panel):
                 col = box.column(align = True)
                 row = col.row(align = True)   
                 row.separator(factor=4)   
-                row.prop(scene.export_settings,"use_sampling",text="Use Sampling", toggle = True, icon="MODIFIER")
-                row.prop(scene.export_settings,"group_by_nla",text="Group by NLA", toggle = True, icon="MODIFIER")
+                row.prop(scene.export_settings,"use_sampling",text="Use Sampling", toggle = True, icon="OUTLINER_OB_CAMERA")
+                row.prop(scene.export_settings,"group_by_nla",text="Group by NLA", toggle = True, icon="NLA")
+                row.separator(factor=4)
+                row = col.row(align = True)    
+                row.separator(factor=4)
+                row.prop(scene.export_settings,"export_all_influences",text="Include all Bone Influences", toggle = True, icon="BONE_DATA")
                 row.separator(factor=4)
 
              # Compression Settings

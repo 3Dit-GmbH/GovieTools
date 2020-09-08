@@ -161,6 +161,7 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
         postion_quantization = context.scene.export_settings.postion_quantization
         normal_quantization = context.scene.export_settings.normal_quantization
         texcoord_quantization = context.scene.export_settings.texcoord_quantization
+        export_all_influences = context.scene.export_settings.export_all_influences
 
         if file_is_saved:
             # export glb
@@ -179,7 +180,8 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
                                     export_apply=apply_modifiers,
                                     export_image_format=export_image_format,
                                     export_nla_strips=group_by_nla,
-                                    export_force_sampling=use_sampling)
+                                    export_force_sampling=use_sampling,
+                                    export_all_influences=export_all_influences)
         else:
             self.report({'INFO'}, 'You need to save Blend file first !')
 
