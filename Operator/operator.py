@@ -1,6 +1,6 @@
 import bpy
 import os
-from . Functions import functions
+from .. Functions import functions
 import subprocess
 
 
@@ -263,13 +263,28 @@ class GOVIE_CleanupMesh_Operator(bpy.types.Operator):
 
     def execute(self, context):
         os.system('cls')
+
+        exclude_temp_list = []
+        collections = bpy.context.view_layer.layer_collection.children
+
+        # switch on all layers but remember vis settings
+        for collection in collections:
+            exclude_temp_list.append(collection.exclude)
+            collection.exclude = False
+
         for obj in bpy.data.objects:
             if obj.type == 'MESH':
+                
                 functions.select_object(obj)
                 O.object.editmode_toggle()
                 O.mesh.delete_loose()
                 O.mesh.dissolve_degenerate()
                 O.object.editmode_toggle()
+                
+        # set back layer settings
+        for collection, exclude_temp_value in zip(collections,exclude_temp_list):
+            collection.exclude = exclude_temp_value
+
 
         self.report({'INFO'}, 'Meshes Cleaned !')
         return {'FINISHED'}
