@@ -183,9 +183,9 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
                                     export_nla_strips=group_by_nla,
                                     export_force_sampling=use_sampling,
                                     export_all_influences=export_all_influences)
-
             # change glb dropdown entry
             context.scene.glb_file_dropdown = context.scene.export_settings.glb_filename
+
         else:
             self.report({'INFO'}, 'You need to save Blend file first !')
 
@@ -280,7 +280,7 @@ class GOVIE_CleanupMesh_Operator(bpy.types.Operator):
                 O.mesh.delete_loose()
                 O.mesh.dissolve_degenerate()
                 O.object.editmode_toggle()
-                
+
         # set back layer settings
         for collection, exclude_temp_value in zip(collections,exclude_temp_list):
             collection.exclude = exclude_temp_value
