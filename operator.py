@@ -1,6 +1,7 @@
 import bpy
 import os
-from . functions import *
+from . Functions import functions
+import subprocess
 
 
 C = bpy.context
@@ -60,7 +61,7 @@ class GOVIE_Preview_Operator(bpy.types.Operator):
         script_dir = os.path.dirname(script_file)
 
         server_path = bpy.path.abspath(script_dir+"\Server\server.py")
-        start_server(server_path,file_path)
+        functions.start_server(server_path,file_path)
         # run browser
         bpy.ops.wm.url_open(url = self.url)
         return {"FINISHED"}
@@ -182,6 +183,9 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
                                     export_nla_strips=group_by_nla,
                                     export_force_sampling=use_sampling,
                                     export_all_influences=export_all_influences)
+
+            # change glb dropdown entry
+            context.scene.glb_file_dropdown = context.scene.export_settings.glb_filename
         else:
             self.report({'INFO'}, 'You need to save Blend file first !')
 
@@ -218,7 +222,7 @@ class GOVIE_Convert_Text_Operator(bpy.types.Operator):
             if obj.type == 'FONT':
 
                 # create new object for mesh
-                select_object(obj)
+                functions.select_object(obj)
                 O.object.convert(target='MESH', keep_original=True)
 
                 textMesh = context.object
@@ -261,7 +265,7 @@ class GOVIE_CleanupMesh_Operator(bpy.types.Operator):
         os.system('cls')
         for obj in bpy.data.objects:
             if obj.type == 'MESH':
-                select_object(obj)
+                functions.select_object(obj)
                 O.object.editmode_toggle()
                 O.mesh.delete_loose()
                 O.mesh.dissolve_degenerate()
@@ -296,7 +300,7 @@ class GOVIE_CheckTexNodes_Operator(bpy.types.Operator):
                 object_materials = [slot.material for slot in obj.material_slots]
                 material_detected = set(object_materials).intersection(set(materialsWithEmptyTexNode))
                 if len(material_detected) > 0:
-                    select_object(obj)
+                    functions.select_object(obj)
 
         if len(mat_name_list) == 0:
             self.report({'INFO'}, 'No Empty Image Nodes')

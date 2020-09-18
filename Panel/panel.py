@@ -1,57 +1,8 @@
 import bpy
-from . functions import *
-from bpy.props import StringProperty,BoolProperty,IntProperty,PointerProperty
+from .. Functions import gui_functions
+from .. import Properties
 
 
-def updateSelItem(self,value):
-    scene = self
-    list_object = scene.objects[scene.object_index]
-    select_object(list_object)
-    
-def remapVisProp(self,value):
-    context = value
-    if (context.object.get('visibility') is not None):
-        context.object["visibility"] = context.object.visibiliy_bool
-
-class Export_Settings(bpy.types.PropertyGroup):  
-    open_export_settings_menu: BoolProperty(default = False)    
-    open_scene_settings_menu: BoolProperty(default = False)    
-    open_animation_settings_menu: BoolProperty(default = False)    
-    open_compression_settings_menu: BoolProperty(default = False)    
-    glb_filename: StringProperty(name="Filename",default="filename")   
-    export_selected: BoolProperty(default = False)
-    export_lights: BoolProperty(default = False)
-    export_animations: BoolProperty(default = True)
-    apply_modifiers: BoolProperty(default = False)
-    use_sampling:BoolProperty(default = False)
-    group_by_nla:BoolProperty(default = True)
-    export_all_influences:BoolProperty(default = False)
-    export_image_format: bpy.props.EnumProperty(
-        name="Image Compression",
-        items=(
-               ('AUTO', 'Automatic', 'Determine the image format from the blender image name.'),
-               ('JPEG', 'JPEG', 'Convert Images to JPEG, images with alpha still use PNG')
-            ))
-    use_draco: BoolProperty(default = True)
-    draco_compression_level: IntProperty(default = 6)
-    postion_quantization: IntProperty(default = 14,min=0,max=30)
-    normal_quantization: IntProperty(default = 10,min=0,max=30)
-    texcoord_quantization: IntProperty(default = 12,min=0,max=30)
-
-
-
-bpy.utils.register_class(Export_Settings)
-
-bpy.types.Scene.export_settings = PointerProperty(type=Export_Settings)
-bpy.types.Scene.object_index = IntProperty(name = "Index for Visibility UI List", update=updateSelItem)
-bpy.types.Object.visibiliy_bool = BoolProperty(name = "Mapping for Property Value", update=remapVisProp)
-bpy.types.Scene.open_verification_menu = BoolProperty(default=False)
-
-
-def run_help_operator(self,context):
-   bpy.ops.scene.help_govie(image_name ="help_overlay_govie_tools.png" )
-
-bpy.types.Scene.help_govie_tools = BoolProperty(default=False,update=run_help_operator)
 
 class ANNO_UL_List(bpy.types.UIList):
 
@@ -164,15 +115,6 @@ class VIS_UL_List(bpy.types.UIList):
 
         return flt_flags, flt_neworder
 
-# -------------------------- PANEL -------------------------
-def headline(layout,*valueList):
-    box = layout.box()
-    row = box.row()
-    
-    split = row.split()
-    for pair in valueList:
-        split = split.split(factor=pair[0])
-        split.label(text=pair[1])
     
 
 class VisibilityPropertyPanel(bpy.types.Panel):
@@ -187,7 +129,7 @@ class VisibilityPropertyPanel(bpy.types.Panel):
         layout = self.layout
         scene = context.scene
          
-        headline(layout,(0.2,"ACTIVE"),(0.6,"OBJECT NAME"),(1,"VISIBLE"))
+        gui_functions.headline(layout,(0.2,"ACTIVE"),(0.6,"OBJECT NAME"),(1,"VISIBLE"))
                 
         layout.template_list("VIS_UL_List", "", scene,
                              "objects", scene, "object_index")
@@ -209,7 +151,7 @@ class AnimationPanel(bpy.types.Panel):
         layout = self.layout
         scene = context.scene
     
-        headline(layout,(0.2,"ACTIVE"),(0.4,"OBJECT NAME"),(1,"ANIMATION NAME"))
+        gui_functions.headline(layout,(0.2,"ACTIVE"),(0.4,"OBJECT NAME"),(1,"ANIMATION NAME"))
         layout.template_list("ANIM_UL_List", "", scene,"objects", scene, "object_index")
         
 class AnnotationPanel(bpy.types.Panel):
@@ -225,7 +167,7 @@ class AnnotationPanel(bpy.types.Panel):
         layout = self.layout
         scene = context.scene
 
-        headline(layout,(0.2,"ACTIVE"),(0.4,"OBJECT NAME"),(1,"TEXT"))
+        gui_functions.headline(layout,(0.2,"ACTIVE"),(0.4,"OBJECT NAME"),(1,"TEXT"))
         layout.template_list("ANNO_UL_List", "", scene, "objects", scene, "object_index")
         layout.operator("object.convert_text", text="Convert Text")
         
@@ -330,6 +272,7 @@ class GLBExportPanel(bpy.types.Panel):
                     row.separator(factor=4)
 
         layout.prop(scene.export_settings,"glb_filename")
+        layout.prop(scene,"glb_file_dropdown")
         # layout.operator("export_scene.gltf", text="Dialog Export")
         layout.operator("scene.gltf_quick_export", text="Export")
         row = layout.row()
