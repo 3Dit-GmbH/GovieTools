@@ -1,8 +1,5 @@
 from . import functions
-
-def glb_file_dropdown_update(self,test):
-    print(test)
-    print(self)
+import bpy
 
 def update_sel_item(self,value):
     scene = self
@@ -10,9 +7,10 @@ def update_sel_item(self,value):
     functions.select_object(list_object)
     
 def remap_vis_prop(self,value):
-    context = value
-    if (context.object.get('visibility') is not None):
-        context.object["visibility"] = context.object.visibiliy_bool
+    for obj in bpy.data.objects:
+            if obj.type == 'MESH':
+                if (obj.get('visibility') is not None):
+                    obj["visibility"] = obj.visibiliy_bool
 
 def headline(layout,*valueList):
     box = layout.box()
