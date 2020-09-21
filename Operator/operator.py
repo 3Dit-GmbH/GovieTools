@@ -1,6 +1,7 @@
 import bpy
 import os
 from .. Functions import functions
+# from .. Server import server
 import subprocess
 
 
@@ -59,8 +60,8 @@ class GOVIE_Preview_Operator(bpy.types.Operator):
 
         script_file = os.path.realpath(__file__)
         script_dir = os.path.dirname(script_file)
+        server_path = os.path.join(script_dir, '..',"Server\server.py")
 
-        server_path = bpy.path.abspath(script_dir+"\Server\server.py")
         functions.start_server(server_path,file_path)
         # run browser
         bpy.ops.wm.url_open(url = self.url)
