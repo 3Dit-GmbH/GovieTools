@@ -140,8 +140,13 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
             return False
 
     def execute(self, context):
+        #check spelling
+        filename = context.scene.export_settings.glb_filename
+        context.scene.export_settings.glb_filename = functions.convert_umlaut(filename)
+
         # blender file saved 
         file_is_saved = bpy.data.is_saved
+
         # create folder
         path = bpy.path.abspath("//glb//")
 

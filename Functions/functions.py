@@ -26,6 +26,10 @@ def stop_server():
         print("Closed process " + str(server_process.pid))
         server_process.kill()
 
+def convert_umlaut(str):
+    spcial_char_map = {ord('ä'):'ae', ord('ü'):'ue', ord('ö'):'oe', ord('ß'):'ss'}
+    return str.translate(spcial_char_map)
+
 atexit.register(stop_server)
 
 
