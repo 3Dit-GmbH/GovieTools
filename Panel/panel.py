@@ -292,4 +292,5 @@ class HelpPanel(bpy.types.Panel):
         layout = self.layout
         
         layout.operator("scene.open_link",text="Govie Platform",icon='WORLD').url = "https://platform.govie.de/"
+        layout.operator("scene.open_link",text="Govie Tutorial",icon='WORLD').url = "https://govie.de/tutorials"
         layout.prop(scene,"help_govie_tools",text="Help",icon = 'HELP')

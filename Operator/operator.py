@@ -1,7 +1,6 @@
 import bpy
 import os
 from .. Functions import functions
-# from .. Server import server
 import subprocess
 
 
@@ -41,8 +40,9 @@ class GOVIE_Preview_Operator(bpy.types.Operator):
     bl_idname = "scene.open_web_preview"
     bl_label = "Open in Browser"
     bl_description = "Press export to display preview of exported file"
-
-    url = "https://3dit-tools.s3.eu-central-1.amazonaws.com/StaticGLBViewer/index.html#model=http://127.0.0.1:8000/export.glb"
+    
+    port = 8000
+    url = "https://3dit-tools.s3.eu-central-1.amazonaws.com/StaticGLBViewer/index.html#model=http://127.0.0.1:"+str(port)+"/export.glb"
 
     @classmethod
     def poll(cls, context):
@@ -62,7 +62,7 @@ class GOVIE_Preview_Operator(bpy.types.Operator):
         script_dir = os.path.dirname(script_file)
         server_path = os.path.join(script_dir, '..',"Server\server.py")
 
-        functions.start_server(server_path,file_path)
+        functions.start_server(server_path,file_path,self.port)
         # run browser
         bpy.ops.wm.url_open(url = self.url)
         return {"FINISHED"}
@@ -144,6 +144,9 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
         filename = context.scene.export_settings.glb_filename
         context.scene.export_settings.glb_filename = functions.convert_umlaut(filename)
 
+        # connect lightmap to emission
+        bpy.ops.object.lightmap_to_emission()
+
         # blender file saved 
         file_is_saved = bpy.data.is_saved
 
@@ -191,6 +194,9 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
                                     export_all_influences=export_all_influences)
             # change glb dropdown entry
             context.scene.glb_file_dropdown = context.scene.export_settings.glb_filename
+
+            # connect lightmap to base color
+            bpy.ops.object.lightmap_to_base_color()
 
         else:
             self.report({'INFO'}, 'You need to save Blend file first !')

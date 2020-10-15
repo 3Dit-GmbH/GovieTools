@@ -3,6 +3,8 @@ from os import curdir
 import sys
 
 
+port = int(sys.argv[2])
+
 class RequestHandler(BaseHTTPRequestHandler):
 
     file_path = sys.argv[1]
@@ -25,6 +27,6 @@ class RequestHandler(BaseHTTPRequestHandler):
         response = {}
         response["status"] = "OK"
 
-httpd = HTTPServer(("127.0.0.1", 8000), RequestHandler)
-print("Hosting server http://127.0.0.1:8000")
+httpd = HTTPServer(("127.0.0.1", port), RequestHandler)
+print("Hosting server http://127.0.0.1:",port)
 httpd.serve_forever()
