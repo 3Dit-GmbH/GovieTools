@@ -156,7 +156,7 @@ class AnimationPanel(bpy.types.Panel):
         layout.operator("scene.seperate_anim", text="Seperate Animaiton")
         
 class AnimationParticleBakePanel(bpy.types.Panel):
-    bl_idname = "ANIM_Bake_PT_custom_prop_panel"
+    bl_idname = "ANIM_PT_bake_custom_prop_panel"
     bl_label = "Animation Particle Bake"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
@@ -188,7 +188,7 @@ class AnimationParticleBakePanel(bpy.types.Panel):
         
         
 class AnimationDecimatePanel(bpy.types.Panel):
-    bl_idname = "ANIM_Decimate_PT_custom_prop_panel"
+    bl_idname = "ANIM_PT_Decimate_custom_prop_panel"
     bl_label = "Animation Decimate"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
