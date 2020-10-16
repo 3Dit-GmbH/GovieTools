@@ -26,6 +26,31 @@ class JoinAnimationOperator(bpy.types.Operator):
             track.name = self.anim_name
             obj.animation_data.action = None
         return {"FINISHED"}
+class SeperateAnimationOperator(bpy.types.Operator):
+    bl_idname = "scene.seperate_anim"
+    bl_label = "Seperate Animation"
+    bl_description = "Transform NLA strips back to Keyframes to make them editable again. Make sure to select all objects you want to transform back."
+    bl_options = {"REGISTER"}
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def execute(self, context):
+        sel_objects = context.selected_objects
+        for obj in sel_objects:
+            if obj.animation_data is None:
+                continue
+        
+            # set actions
+            track = obj.animation_data.nla_tracks[0]
+            action_name = track.strips[0].name
+            action = bpy.data.actions.get(action_name)
+            obj.animation_data.action  = action
+            # remove track
+            obj.animation_data.nla_tracks.remove(track)
+
+        return {"FINISHED"}
 
 
 class RenameNLAAnimationOperator(bpy.types.Operator):

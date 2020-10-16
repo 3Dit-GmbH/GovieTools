@@ -2,6 +2,7 @@ import bpy
 import os
 from .. Functions import functions
 import subprocess
+import addon_utils
 
 
 C = bpy.context
@@ -144,8 +145,10 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
         filename = context.scene.export_settings.glb_filename
         context.scene.export_settings.glb_filename = functions.convert_umlaut(filename)
 
-        # connect lightmap to emission
-        bpy.ops.object.lightmap_to_emission()
+        # GLBTextureTools installed ?
+        if addon_utils.check("GLBTextureTools"):
+            # bpy.ops.object.preview_bake_texture()
+            bpy.ops.object.lightmap_to_emission()
 
         # blender file saved 
         file_is_saved = bpy.data.is_saved
@@ -195,8 +198,9 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
             # change glb dropdown entry
             context.scene.glb_file_dropdown = context.scene.export_settings.glb_filename
 
-            # connect lightmap to base color
-            bpy.ops.object.lightmap_to_base_color()
+            if addon_utils.check("GLBTextureTools"):
+                # connect lightmap to base color
+                bpy.ops.object.lightmap_to_base_color()
 
         else:
             self.report({'INFO'}, 'You need to save Blend file first !')

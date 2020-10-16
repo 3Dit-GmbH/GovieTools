@@ -149,10 +149,11 @@ class AnimationPanel(bpy.types.Panel):
         gui_functions.headline(layout,(0.2,"ACTIVE"),(0.4,"OBJECT NAME"),(1,"ANIMATION NAME"))
         layout.template_list("ANIM_UL_List", "", scene,"objects", scene, "object_index")
         
-        # JOIN ANIMATION
+        # ANIMATION
         layout.prop(scene.animation_settings,"join_anim_name",text="Name")
         layout.operator("scene.join_anim", text="Join Animaiton").anim_name = scene.animation_settings.join_anim_name
         layout.operator("scene.rename_anim", text="Rename Animaiton").anim_name = scene.animation_settings.join_anim_name
+        layout.operator("scene.seperate_anim", text="Seperate Animaiton")
         
 class AnimationParticleBakePanel(bpy.types.Panel):
     bl_idname = "ANIM_Bake_PT_custom_prop_panel"
