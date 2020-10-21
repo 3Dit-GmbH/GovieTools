@@ -144,11 +144,13 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
         #check spelling
         filename = context.scene.export_settings.glb_filename
         context.scene.export_settings.glb_filename = functions.convert_umlaut(filename)
-
+        save_preview_lightmap_setting = bpy.context.scene.texture_settings.preview_lightmap
+        
         # GLBTextureTools installed ?
         if addon_utils.check("GLBTextureTools"):
-            # bpy.ops.object.preview_bake_texture()
-            bpy.ops.object.lightmap_to_emission()
+            bpy.ops.object.preview_bake_texture(connect=False)
+            bpy.ops.object.preview_lightmap(connect=False)
+            bpy.ops.object.lightmap_to_emission(connect=True)
 
         # blender file saved 
         file_is_saved = bpy.data.is_saved
@@ -199,8 +201,9 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
             context.scene.glb_file_dropdown = context.scene.export_settings.glb_filename
 
             if addon_utils.check("GLBTextureTools"):
-                # connect lightmap to base color
-                bpy.ops.object.lightmap_to_base_color()
+                bpy.ops.object.lightmap_to_emission(connect=False)
+                bpy.ops.object.preview_lightmap(connect=save_preview_lightmap_setting)
+
 
         else:
             self.report({'INFO'}, 'You need to save Blend file first !')
