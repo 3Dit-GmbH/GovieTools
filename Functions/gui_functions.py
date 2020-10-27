@@ -8,9 +8,8 @@ def update_sel_item(self,value):
     
 def remap_vis_prop(self,value):
     for obj in bpy.data.objects:
-            if obj.type == 'MESH':
-                if obj.get('visibility') is not None:
-                    obj["visibility"] = obj.visibiliy_bool
+            if obj.get('visibility') is not None:
+                obj["visibility"] = obj.visibiliy_bool
 
 def headline(layout,*valueList):
     box = layout.box()

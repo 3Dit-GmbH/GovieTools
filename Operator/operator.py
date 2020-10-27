@@ -192,6 +192,7 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
                                     export_extras=True,
                                     export_lights=export_lights,
                                     export_animations=export_animations,
+                                    export_morph=True,
                                     export_apply=apply_modifiers,
                                     export_image_format=export_image_format,
                                     export_nla_strips=group_by_nla,
