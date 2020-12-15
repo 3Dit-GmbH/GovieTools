@@ -15,6 +15,7 @@ class Export_Settings(bpy.types.PropertyGroup):
     export_lights: BoolProperty(default = False)
     export_animations: BoolProperty(default = True)
     apply_modifiers: BoolProperty(default = False)
+    export_colors: BoolProperty(default = True)
     use_sampling:BoolProperty(default = False)
     group_by_nla:BoolProperty(default = True)
     export_all_influences:BoolProperty(default = False)

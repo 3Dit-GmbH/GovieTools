@@ -8,12 +8,26 @@ server_process = None
 O = bpy.ops
 
 
-def select_object(obj):
+def select_object(self, obj):
     C = bpy.context
-
-    O.object.select_all(action='DESELECT')
-    C.view_layer.objects.active = obj
-    obj.select_set(True)
+    O = bpy.ops
+    try:
+        O.object.select_all(action='DESELECT')
+        C.view_layer.objects.active = obj
+        obj.select_set(True)
+    except:
+        self.report({'INFO'}, "Object {} not in View Layer".format(obj.name))
+    
+def select_object_by_mat(self, mat):
+    obj_found = None
+    D = bpy.data
+    for obj in D.objects:
+        if obj.type != "MESH":
+            continue
+        object_materials = [slot.material for slot in obj.material_slots]
+        if mat in object_materials:
+            obj_found = obj
+            select_object(self, obj)
 
 def start_server(server_path,file_path,port):
     global server_process 

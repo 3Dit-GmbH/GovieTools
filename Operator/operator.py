@@ -144,10 +144,10 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
         #check spelling
         filename = context.scene.export_settings.glb_filename
         context.scene.export_settings.glb_filename = functions.convert_umlaut(filename)
-        save_preview_lightmap_setting = bpy.context.scene.texture_settings.preview_lightmap
         
         # GLBTextureTools installed ?
-        if addon_utils.check("GLBTextureTools"):
+        if addon_utils.check("GLBTextureTools")[1]:
+            save_preview_lightmap_setting = bpy.context.scene.texture_settings.preview_lightmap
             bpy.ops.object.preview_bake_texture(connect=False)
             bpy.ops.object.preview_lightmap(connect=False)
             bpy.ops.object.lightmap_to_emission(connect=True)
@@ -177,6 +177,7 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
         normal_quantization = context.scene.export_settings.normal_quantization
         texcoord_quantization = context.scene.export_settings.texcoord_quantization
         export_all_influences = context.scene.export_settings.export_all_influences
+        export_colors = context.scene.export_settings.export_colors
 
         if file_is_saved:
             # export glb
@@ -197,11 +198,12 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
                                     export_image_format=export_image_format,
                                     export_nla_strips=group_by_nla,
                                     export_force_sampling=use_sampling,
-                                    export_all_influences=export_all_influences)
+                                    export_all_influences=export_all_influences,
+                                    export_colors=export_colors)
             # change glb dropdown entry
             context.scene.glb_file_dropdown = context.scene.export_settings.glb_filename
 
-            if addon_utils.check("GLBTextureTools"):
+            if addon_utils.check("GLBTextureTools")[1]:
                 bpy.ops.object.lightmap_to_emission(connect=False)
                 bpy.ops.object.preview_lightmap(connect=save_preview_lightmap_setting)
 
@@ -282,8 +284,6 @@ class GOVIE_CleanupMesh_Operator(bpy.types.Operator):
         return context.mode == 'OBJECT'
 
     def execute(self, context):
-        os.system('cls')
-
         exclude_temp_list = []
         collections = bpy.context.view_layer.layer_collection.children
 
@@ -295,7 +295,7 @@ class GOVIE_CleanupMesh_Operator(bpy.types.Operator):
         for obj in bpy.data.objects:
             if obj.type == 'MESH':
                 
-                functions.select_object(obj)
+                functions.select_object(self,obj)
                 O.object.editmode_toggle()
                 O.mesh.delete_loose()
                 O.mesh.dissolve_degenerate()
@@ -323,19 +323,14 @@ class GOVIE_CheckTexNodes_Operator(bpy.types.Operator):
         mat_name_list.clear()
 
         # get materials with texture nodes that have no image assigned
-        materialsWithEmptyTexNode = [
-            mat for mat in D.materials for node in mat.node_tree.nodes if node.type == "TEX_IMAGE" and node.image is None]
-
-       # add to list
-        for mat in materialsWithEmptyTexNode:
-            mat_name_list.append(mat.name)
-
-        for obj in D.objects:
-            if obj.type == "MESH":
-                object_materials = [slot.material for slot in obj.material_slots]
-                material_detected = set(object_materials).intersection(set(materialsWithEmptyTexNode))
-                if len(material_detected) > 0:
-                    functions.select_object(obj)
+        for mat in D.materials:
+            if mat.node_tree is None:
+                continue
+            for node in mat.node_tree.nodes:
+                if node.type == "TEX_IMAGE" and node.image is None:
+                    mat_name_list.append(mat.name)
+                    self.report({'INFO'}, "Found empty image node in material {}".format(mat.name))
+                    functions.select_object_by_mat(self,mat)
 
         if len(mat_name_list) == 0:
             self.report({'INFO'}, 'No Empty Image Nodes')
