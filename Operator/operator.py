@@ -244,7 +244,7 @@ class GOVIE_Convert_Text_Operator(bpy.types.Operator):
             if obj.type == 'FONT':
 
                 # create new object for mesh
-                functions.select_object(obj)
+                functions.select_object(self,obj)
                 O.object.convert(target='MESH', keep_original=True)
 
                 textMesh = context.object

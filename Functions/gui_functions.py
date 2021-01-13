@@ -4,7 +4,7 @@ import bpy
 def update_sel_item(self,value):
     scene = self
     list_object = scene.objects[scene.object_index]
-    functions.select_object(list_object)
+    functions.select_object(self,list_object)
     
 def remap_vis_prop(self,value):
     for obj in bpy.data.objects:
