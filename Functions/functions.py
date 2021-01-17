@@ -1,9 +1,8 @@
 import bpy
 import subprocess
-import atexit
-import time
+import json
+import os, signal
 
-server_process = None
 
 O = bpy.ops
 
@@ -29,24 +28,56 @@ def select_object_by_mat(self, mat):
             obj_found = obj
             select_object(self, obj)
 
-def start_server(server_path,file_path,port):
-    global server_process 
-    if server_process is not None:
-        stop_server()
-    server_process = subprocess.Popen([bpy.app.binary_path_python, server_path, file_path,str(port)])
+def get_config_file():
+    script_file = os.path.realpath(__file__)
+    script_dir = os.path.dirname(script_file)
+    process_list_path = os.path.join(script_dir , '..',"Server\process_list.json")
+    return process_list_path
+
+def start_server(server_file_path,file_path,port):
+    
+    process_list_path = get_config_file()
+    
+    # read pid from file
+    with open(process_list_path) as f:
+        pid_list = json.load(f)
+
+    if len(pid_list)>0:
+        cleaned_pid_list = stop_server()
+        pid_list = cleaned_pid_list
+    
+    server_process = subprocess.Popen([bpy.app.binary_path_python, server_file_path, file_path,str(port)])
+    pid_list.append(server_process.pid)
+    
+    # write pid to file
+    with open(process_list_path,'w') as f:
+         json.dump(pid_list, f)
 
 def stop_server():
-    global server_process 
-    if server_process is not None:
-        print("Closed process " + str(server_process.pid))
-        server_process.kill()
+    
+    process_list_path = get_config_file()
+
+    # read pid from file
+    with open(process_list_path) as f:
+        pid_list = json.load(f)
+        
+    for pid in pid_list:
+        try:
+            os.kill(pid, signal.SIGTERM)
+            pid_list.remove(pid)
+            print("Closed process " + str(pid))
+        except OSError:
+            continue
+    
+
+    # write pid to file
+    with open(process_list_path,'w') as f:
+         json.dump(pid_list, f)
+         
+    return pid_list
+
 
 def convert_umlaut(str):
     spcial_char_map = {ord('ä'):'ae', ord('ü'):'ue', ord('ö'):'oe', ord('ß'):'ss'}
     return str.translate(spcial_char_map)
-
-
-
-atexit.register(stop_server)
-
 

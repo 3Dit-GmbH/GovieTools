@@ -17,13 +17,14 @@ bl_info = {
     "author": "Lorenz Wieseke",
     "description": "",
     "blender": (2, 80, 1),
-    "version": (0,0,7),
+    "version": (0,0,8),
     "location": "",    
     "warning": "",
     "category": "Generic"
 }
 
 from . import auto_load
+from .Functions import functions
 
 auto_load.init()
 
@@ -32,3 +33,4 @@ def register():
 
 def unregister():
     auto_load.unregister()
+    functions.stop_server()
