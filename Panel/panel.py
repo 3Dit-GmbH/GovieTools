@@ -304,18 +304,13 @@ class GLBExportPanel(bpy.types.Panel):
                 box.alert = False
 
                 col = box.column()
-                
                 row = col.row(align = True)   
-                row.separator(factor=4)  
+                row.prop(scene.export_settings,"export_image_format",text="Format")
+                row = col.row()
                 row.prop(scene.export_settings,"use_draco",text="Use Draco", toggle = True)
-                row.separator(factor=4)  
+
                 if scene.export_settings.use_draco:
                     # Draco Settings
-                    row = col.row(align = True)   
-                    row.separator(factor=4)  
-                    row.prop(scene.export_settings,"export_image_format",text="Format")
-                    row.separator(factor=4)  
-
                     col = box.column(align = True)
                     row = col.row(align = True)   
                     row.separator(factor=4)

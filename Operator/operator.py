@@ -112,6 +112,9 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
         filename = context.scene.export_settings.glb_filename
         context.scene.export_settings.glb_filename = functions.convert_umlaut(filename)
         
+        #check annotation names
+        functions.rename_annotation()
+        
         # GLBTextureTools installed ?
         if addon_utils.check("GLBTextureTools")[1]:
             save_preview_lightmap_setting = bpy.context.scene.texture_settings.preview_lightmap

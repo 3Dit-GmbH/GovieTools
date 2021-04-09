@@ -81,3 +81,7 @@ def convert_umlaut(str):
     spcial_char_map = {ord('ä'):'ae', ord('ü'):'ue', ord('ö'):'oe', ord('ß'):'ss'}
     return str.translate(spcial_char_map)
 
+def rename_annotation():
+    for o in bpy.data.objects:
+        if o.name.startswith('Under'):
+            o.data.name = o.name
