@@ -150,63 +150,67 @@ class AnimationPanel(bpy.types.Panel):
         layout.template_list("ANIM_UL_List", "", scene,"objects", scene, "object_index")
         
         # ANIMATION
-        layout.prop(scene.animation_settings,"join_anim_name",text="Name")
-        layout.operator("scene.join_anim", text="Join Animation").anim_name = scene.animation_settings.join_anim_name
-        layout.operator("scene.rename_anim", text="Rename Animation").anim_name = scene.animation_settings.join_anim_name
-        layout.operator("scene.seperate_anim", text="Seperate Animation")
-        
-class AnimationParticleBakePanel(bpy.types.Panel):
-    bl_idname = "ANIM_PT_bake_custom_prop_panel"
-    bl_label = "Animation Particle Bake"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "UI"
-    bl_category = 'Govie Tools'
-    bl_options = {'DEFAULT_CLOSED'}
-    bl_order = 2
+        layout.prop(scene,"open_animation_manage",text="Manage Animation", icon = 'TRIA_DOWN' if scene.open_animation_manage else 'TRIA_RIGHT' )
+        if scene.open_animation_manage:
+            layout.separator(factor=0.1)
+            row = layout.row()
+            row.separator(factor=0.1)
+            box = row.box()
 
-    def draw(self, context):
-        layout = self.layout
-        scene = context.scene
-               
-        # particle settings
-        row = layout.row()
-        row.prop(scene.particle_settings,"key_loc",text="Key Location")
-        row.prop(scene.particle_settings,"key_rot",text="Key Rotation")
-        
-        row = layout.row()
-        row.prop(scene.particle_settings,"key_scale",text="Key Scale")
-        row.prop(scene.particle_settings,"key_vis",text="Key Visibility")
-        layout.prop(scene.particle_settings,"frame_offset",text="Frame Offset")
-        layout.prop(scene.particle_settings,"collection_name",text="")
+            box.prop(scene.animation_settings,"join_anim_name",text="Name")
+            box.operator("scene.join_anim", text="Join Animation").anim_name = scene.animation_settings.join_anim_name
+            box.operator("scene.rename_anim", text="Rename Animation").anim_name = scene.animation_settings.join_anim_name
+            box.operator("scene.seperate_anim", text="Seperate Animation")
+            row.separator(factor=0.1)
+            layout.separator(factor=0.1)
 
-        # Bake Operator
-        bake_particle_op = layout.operator("object.bake_particles", text="Bake Particles")
-        bake_particle_op.KEYFRAME_LOCATION = scene.particle_settings.key_loc
-        bake_particle_op.KEYFRAME_ROTATION = scene.particle_settings.key_rot
-        bake_particle_op.KEYFRAME_SCALE = scene.particle_settings.key_scale
-        bake_particle_op.KEYFRAME_VISIBILITY = scene.particle_settings.key_vis
-        
-        
-class AnimationDecimatePanel(bpy.types.Panel):
-    bl_idname = "ANIM_PT_Decimate_custom_prop_panel"
-    bl_label = "Animation Decimate"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "UI"
-    bl_category = 'Govie Tools'
-    bl_options = {'DEFAULT_CLOSED'}
-    bl_order = 3
 
-    def draw(self, context):
-        layout = self.layout
-        scene = context.scene
-                      
-        # DECIMATE KEYFRAMES
-        row = layout.row()
-        row.prop(scene.animation_settings,"simplify_keyframes_enum",text="")
-        row.prop(scene.animation_settings,"decimate_ratio",text="")
-        simplify_keyframe_op = layout.operator("scene.simplify_keyframes",text="Simplify Keyframes")
-        simplify_keyframe_op.mode = scene.animation_settings.simplify_keyframes_enum
-        simplify_keyframe_op.decimate_ratio = scene.animation_settings.decimate_ratio
+        
+        layout.prop(scene,"open_animation_particle",text="Bake Particles", icon = 'TRIA_DOWN' if scene.open_animation_particle else 'TRIA_RIGHT' )
+        if scene.open_animation_particle:
+            layout.separator(factor=0.1)
+            row = layout.row()
+            row.separator(factor=0.1)
+            box = row.box()
+
+            # particle settings
+            row = box.row()
+            row.prop(scene.particle_settings,"key_loc",text="Key Location")
+            row.prop(scene.particle_settings,"key_rot",text="Key Rotation")
+             
+            row = box.row()
+            row.prop(scene.particle_settings,"key_scale",text="Key Scale")
+            row.prop(scene.particle_settings,"key_vis",text="Key Visibility")
+            row = box.row()
+            row.prop(scene.particle_settings,"frame_offset",text="Frame Offset")
+            row.prop(scene.particle_settings,"collection_name",text="")
+
+            # Bake Operator
+            row = box.row()
+            bake_particle_op = row.operator("object.bake_particles", text="Bake Particles")
+            bake_particle_op.KEYFRAME_LOCATION = scene.particle_settings.key_loc
+            bake_particle_op.KEYFRAME_ROTATION = scene.particle_settings.key_rot
+            bake_particle_op.KEYFRAME_SCALE = scene.particle_settings.key_scale
+            bake_particle_op.KEYFRAME_VISIBILITY = scene.particle_settings.key_vis
+
+            row.separator(factor=0.1)
+            layout.separator(factor=0.1)
+        
+        
+        layout.prop(scene,"open_animation_simplifly",text="Simplify Animation", icon = 'TRIA_DOWN' if scene.open_animation_simplifly else 'TRIA_RIGHT' )
+        if scene.open_animation_simplifly:
+            layout.separator(factor=0.1)
+            row = layout.row()
+            row.separator(factor=0.1)
+            box = row.box()
+            row = box.row()
+            row.prop(scene.animation_settings,"simplify_keyframes_enum",text="")
+            row.prop(scene.animation_settings,"decimate_ratio",text="")
+            simplify_keyframe_op = layout.operator("scene.simplify_keyframes",text="Simplify Keyframes")
+            simplify_keyframe_op.mode = scene.animation_settings.simplify_keyframes_enum
+            simplify_keyframe_op.decimate_ratio = scene.animation_settings.decimate_ratio
+            row.separator(factor=0.1)
+            layout.separator(factor=0.1)
         
 
 class VisibilityPropertyPanel(bpy.types.Panel):
@@ -267,16 +271,16 @@ class GLBExportPanel(bpy.types.Panel):
 
                 col = box.column(align = True)
                 row = col.row(align = True)           
-                row.separator(factor=4)
+                row.separator(factor=1)
                 row.prop(scene.export_settings,"export_selected",text="Selected Only", toggle = True, icon="RESTRICT_SELECT_OFF")
                 row.prop(scene.export_settings,"export_lights",text="Include Lights", toggle = True, icon="LIGHT")
-                row.separator(factor=4)
+                row.separator(factor=1)
      
                 row = col.row(align = True)           
-                row.separator(factor=4)
+                row.separator(factor=1)
                 row.prop(scene.export_settings,"export_animations",text="Include Animation", toggle = True, icon="RENDER_ANIMATION")
                 row.prop(scene.export_settings,"apply_modifiers",text="Apply Modifiers", toggle = True, icon="MODIFIER")
-                row.separator(factor=4)
+                row.separator(factor=1)
     
 
             # Animation Settings
@@ -287,14 +291,14 @@ class GLBExportPanel(bpy.types.Panel):
                 box.alert = False
                 col = box.column(align = True)
                 row = col.row(align = True)   
-                row.separator(factor=4)   
+                row.separator(factor=1)   
                 row.prop(scene.export_settings,"use_sampling",text="Use Sampling", toggle = True, icon="OUTLINER_OB_CAMERA")
                 row.prop(scene.export_settings,"group_by_nla",text="Group by NLA", toggle = True, icon="NLA")
-                row.separator(factor=4)
+                row.separator(factor=1)
                 row = col.row(align = True)    
-                row.separator(factor=4)
+                row.separator(factor=1)
                 row.prop(scene.export_settings,"export_all_influences",text="Include all Bone Influences", toggle = True, icon="BONE_DATA")
-                row.separator(factor=4)
+                row.separator(factor=1)
 
              # Compression Settings
             if scene.export_settings.open_compression_settings_menu:
@@ -305,24 +309,28 @@ class GLBExportPanel(bpy.types.Panel):
 
                 col = box.column()
                 row = col.row(align = True)   
+                row.separator(factor=1)
                 row.prop(scene.export_settings,"export_image_format",text="Format")
+                row.separator(factor=1)
                 row = col.row()
+                row.separator(factor=1)
                 row.prop(scene.export_settings,"use_draco",text="Use Draco", toggle = True)
+                row.separator(factor=1)
 
                 if scene.export_settings.use_draco:
                     # Draco Settings
                     col = box.column(align = True)
                     row = col.row(align = True)   
-                    row.separator(factor=4)
+                    row.separator(factor=1)
                     row.prop(scene.export_settings,"draco_compression_level",text="Compression Level")
                     row.prop(scene.export_settings,"postion_quantization",text="Position Quantisation")
-                    row.separator(factor=4)
+                    row.separator(factor=1)
 
                     row = col.row(align = True)   
-                    row.separator(factor=4)
+                    row.separator(factor=1)
                     row.prop(scene.export_settings,"normal_quantization",text="Normal Quantisation")
                     row.prop(scene.export_settings,"texcoord_quantization",text="Texture Coord. Quantisation")
-                    row.separator(factor=4)
+                    row.separator(factor=1)
 
         layout.prop(scene.export_settings,"glb_filename")
         layout.prop(scene,"glb_file_dropdown")
@@ -344,6 +352,9 @@ class HelpPanel(bpy.types.Panel):
         scene = context.scene
         layout = self.layout
         
-        layout.operator("scene.open_link",text="Govie Platform",icon='WORLD').url = "https://platform.govie.de/"
-        layout.operator("scene.open_link",text="Govie Tutorial",icon='WORLD').url = "https://govie.de/tutorials"
-        layout.prop(scene,"help_govie_tools",text="Help",icon = 'HELP')
+        layout.label(text="To use the full potential of the add-on, you may sign up for a free govie account")
+        layout.operator("scene.open_link",text="Govie Platform",icon='WORLD').url = "https://platform.govie.de/register#/?utm_source=blender-add-on&utm_medium=button"
+        
+        layout.label(text="Find help on how to use the add-ons and the govie editor")
+        layout.operator("scene.open_link",text="Blender Tutorial",icon='HELP').url = "https://govie.de/tutorials-blender/"
+        layout.operator("scene.open_link",text="Govie Tutorial",icon='HELP').url = "https://govie.de/tutorials"
