@@ -58,10 +58,11 @@ class ANIM_UL_List(bpy.types.UIList):
                 split.label(text=item.name)
 
             split = split.split(factor=1)
-            if item.animation_data.action:
+                
+            if hasattr(item.animation_data,"nla_tracks") and len(item.animation_data.nla_tracks) > 0:
+                split.prop(item.animation_data.nla_tracks[0], "name", text="")
+            elif item.animation_data.action:
                 split.prop(item.animation_data.action, "name", text="")
-        # if item.animation_data.nla_tracks:
-        #     split.prop(item.animation_data.nla_tracks[0], "name", text="")
 
     def filter_items(self, context, data, propname):
         objects_in_scene = data.objects
@@ -70,7 +71,9 @@ class ANIM_UL_List(bpy.types.UIList):
         flt_flags = []
         flt_neworder = []
 
-        flt_flags = [self.bitflag_filter_item if obj.animation_data and obj.animation_data.action and obj.visible_get(
+        # flt_flags = [self.bitflag_filter_item if obj.animation_data and obj.animation_data.action and obj.visible_get(
+        # ) else 0 for obj in objects_in_scene]
+        flt_flags = [self.bitflag_filter_item if  hasattr(obj.animation_data,"nla_tracks") > 0 and obj.visible_get(
         ) else 0 for obj in objects_in_scene]
 
         return flt_flags, flt_neworder
@@ -352,9 +355,11 @@ class HelpPanel(bpy.types.Panel):
         scene = context.scene
         layout = self.layout
         
-        layout.label(text="To use the full potential of the add-on, you may sign up for a free govie account")
+        layout.label(text="To use the full potential of the add-on, ")
+        layout.label(text=" you may sign up for a free govie account")
         layout.operator("scene.open_link",text="Govie Platform",icon='WORLD').url = "https://platform.govie.de/register#/?utm_source=blender-add-on&utm_medium=button"
-        
+
+
         layout.label(text="Find help on how to use the add-ons and the govie editor")
         layout.operator("scene.open_link",text="Blender Tutorial",icon='HELP').url = "https://govie.de/tutorials-blender/"
         layout.operator("scene.open_link",text="Govie Tutorial",icon='HELP').url = "https://govie.de/tutorials"
