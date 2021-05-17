@@ -15,12 +15,14 @@
 bl_info = {
     "name": "Govie Tools",
     "author": "Lorenz Wieseke",
-    "description": "",
-    "blender": (2, 80, 1),
+    "description": "This add-on helps you transform your model into a web-optimized glb file.",
+    "blender": (2, 90, 0),
     "version": (0,0,9),
-    "location": "",    
+    "location": "View 3D -> Property Panel (N-Key in 3D View)",    
     "warning": "",
-    "category": "Generic"
+    "category": "Scene",
+    "wiki_url": "https://govie.de/tutorials-blender/",
+    "tracker_url": "https://github.com/LorenzWieseke/GovieTools/issues",
 }
 
 from . import auto_load
