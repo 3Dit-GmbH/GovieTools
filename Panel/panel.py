@@ -340,7 +340,7 @@ class GLBExportPanel(bpy.types.Panel):
         # layout.operator("export_scene.gltf", text="Dialog Export")
         layout.operator("scene.gltf_quick_export", text="Export")
         row = layout.row()
-        row.operator("scene.open_folder",icon='FILEBROWSER')
+        row.operator("scene.open_export_folder",icon='FILEBROWSER')
         row.operator("scene.open_web_preview",text="Preview",icon='WORLD')
         
 class HelpPanel(bpy.types.Panel):

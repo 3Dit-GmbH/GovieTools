@@ -15,8 +15,8 @@ O = bpy.ops
 #     name="Filename", default="filename")
 
 
-class GOVIE_Open_Folder_Operator(bpy.types.Operator):
-    bl_idname = "scene.open_folder"
+class GOVIE_open_export_folder_Operator(bpy.types.Operator):
+    bl_idname = "scene.open_export_folder"
     bl_label = "Open Folder"
     bl_description = "Open current GLB folder"
 
@@ -98,7 +98,7 @@ class GOVIE_Remove_Property_Operator(bpy.types.Operator):
 class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
     bl_idname = "scene.gltf_quick_export"
     bl_label = "EXPORT_GLTF"
-    bl_description = "Save Blender file to use this button ! The GLB file will be saved to 'pathOfBlendFile/glb/filename.glb'"
+    bl_description = "Save Blend file first ! The GLB file will be saved to 'pathOfBlendFile/glb/filename.glb'"
 
     @classmethod
     def poll(cls, context):
