@@ -77,8 +77,9 @@ bpy.types.Scene.animation_settings = PointerProperty(type=AnimationSettings)
 def get_glb_files(self, context):
     glb_files = []
         
-    blend_path = bpy.data.filepath
-    glb_path = os.path.dirname(blend_path)+"\glb\\"
+    file_path = bpy.data.filepath
+    project_dir = os.path.dirname(file_path)
+    glb_path = os.path.join(project_dir,'glb','')
 
     if not os.path.exists(glb_path):
         return glb_files

@@ -21,7 +21,7 @@ bl_info = {
     "location": "View 3D -> Property Panel (N-Key in 3D View)",    
     "warning": "",
     "category": "Scene",
-    "wiki_url": "https://govie.de/tutorials-blender/",
+    "wiki_url": "https://govie.de/en/tutorials-blender/?utm_source=blender-add-on&utm_medium=button#govie_tools",
     "tracker_url": "https://github.com/LorenzWieseke/GovieTools/issues",
 }
 

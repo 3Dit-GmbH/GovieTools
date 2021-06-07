@@ -25,11 +25,12 @@ class GOVIE_open_export_folder_Operator(bpy.types.Operator):
         return True
 
     def execute(self, context):
-        filepath = bpy.data.filepath
-        directory = os.path.dirname(filepath) + "\\glb\\"
-        
-        if filepath is not "":
-            subprocess.call("explorer " + directory, shell=True)
+        file_path = bpy.data.filepath
+        project_dir = os.path.dirname(file_path)
+        glb_path = os.path.join(project_dir,'glb','')
+            
+        if file_path is not "":
+            subprocess.call("explorer " + glb_path, shell=True)
         else:
             self.report({'INFO'}, 'You need to save Blend file first !')
 
@@ -125,11 +126,14 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
         # blender file saved 
         file_is_saved = bpy.data.is_saved
 
-        # create folder
-        path = bpy.path.abspath("//glb//")
+        # create folder     
+        file_path = bpy.data.filepath
+        project_dir = os.path.dirname(file_path)
+        glb_path = os.path.join(project_dir,'glb','')
+        
 
-        if not os.path.exists(path):
-            os.makedirs(path)
+        if not os.path.exists(glb_path):
+            os.makedirs(glb_path)
             
         # get export settigns
         filename = context.scene.export_settings.glb_filename
@@ -153,7 +157,7 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
             # export glb
             texcoord_quantization = context.scene.export_settings.texcoord_quantization
 
-            bpy.ops.export_scene.gltf(filepath=path+filename, 
+            bpy.ops.export_scene.gltf(filepath=glb_path+filename, 
                                     export_draco_mesh_compression_enable=use_draco,
                                     export_draco_mesh_compression_level=draco_compression_level,
                                     export_draco_position_quantization=postion_quantization,

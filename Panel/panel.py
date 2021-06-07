@@ -363,8 +363,8 @@ class HelpPanel(bpy.types.Panel):
 
 
             layout.label(text="Find help on how to use the add-ons and the govie editor")
-            layout.operator("scene.open_link",text="Add-on Documentation",icon='HELP').url = "https://govie.de/tutorials-blender/?utm_source=blender-add-on&utm_medium=button#govie_tools"
-            layout.operator("scene.open_link",text="Govie Tutorial",icon='HELP').url = "https://govie.de/tutorials?utm_source=blender-add-on&utm_medium=button"
+            layout.operator("scene.open_link",text="Add-on Documentation",icon='HELP').url = "https://govie.de/en/tutorials-blender/?utm_source=blender-add-on&utm_medium=button#govie_tools"
+            layout.operator("scene.open_link",text="Govie Tutorial",icon='HELP').url = "https://govie.de/en/tutorials?utm_source=blender-add-on&utm_medium=button"
         if lang == 'de_DE':
             layout.label(text="Um das volle Potential dieses Add-ons zu nutzen, ")
             layout.label(text="empfehlen wir einen kostenlosen Account des Govie Editors anzulegen")
