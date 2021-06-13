@@ -58,11 +58,16 @@ class ANIM_UL_List(bpy.types.UIList):
                 split.label(text=item.name)
 
             split = split.split(factor=1)
-                
-            if hasattr(item.animation_data,"nla_tracks") and len(item.animation_data.nla_tracks) > 0:
-                split.prop(item.animation_data.nla_tracks[0], "name", text="")
-            elif item.animation_data.action:
+            
+
+            has_action_name = getattr(getattr(getattr(item,"animation_data",None),"action",None),"name",None)
+            has_nla_name = getattr(getattr(getattr(item,"animation_data",None),"nla_tracks",None),"active",None)
+
+            if has_action_name:
                 split.prop(item.animation_data.action, "name", text="")
+            if has_nla_name:
+                split.prop(item.animation_data.nla_tracks.active, "name", text="")
+
 
     def filter_items(self, context, data, propname):
         objects_in_scene = data.objects
@@ -70,12 +75,18 @@ class ANIM_UL_List(bpy.types.UIList):
         # Default return values.
         flt_flags = []
         flt_neworder = []
-
-        # flt_flags = [self.bitflag_filter_item if obj.animation_data and obj.animation_data.action and obj.visible_get(
+        
+        # flt_flags = [self.bitflag_filter_item if getattr(getattr(getattr(obj,"animation_data",None),"action",None),"name",None) and obj.visible_get(
         # ) else 0 for obj in objects_in_scene]
-        flt_flags = [self.bitflag_filter_item if  hasattr(obj.animation_data,"nla_tracks") > 0 and obj.visible_get(
-        ) else 0 for obj in objects_in_scene]
 
+        for obj in objects_in_scene:
+            has_action_name = getattr(getattr(getattr(obj,"animation_data",None),"action",None),"name",None)
+            has_nla_name = getattr(getattr(getattr(obj,"animation_data",None),"nla_tracks",None),"active",None)
+            if has_action_name or has_nla_name:
+                flt_flags.append(self.bitflag_filter_item)
+            else:
+                flt_flags.append(0)
+                 
         return flt_flags, flt_neworder
 
 
@@ -163,7 +174,7 @@ class AnimationPanel(bpy.types.Panel):
             box.prop(scene.animation_settings,"join_anim_name",text="Name")
             box.operator("scene.join_anim", text="Join Animation").anim_name = scene.animation_settings.join_anim_name
             box.operator("scene.rename_anim", text="Rename Animation").anim_name = scene.animation_settings.join_anim_name
-            box.operator("scene.seperate_anim", text="Seperate Animation")
+            box.operator("scene.seperate_anim", text="Separate Animation")
             row.separator(factor=0.1)
             layout.separator(factor=0.1)
 
