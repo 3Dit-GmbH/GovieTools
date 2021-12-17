@@ -3,6 +3,9 @@ import subprocess
 import json
 import os, signal
 
+import sys
+from pathlib import Path
+
 
 O = bpy.ops
 
@@ -45,8 +48,9 @@ def start_server(server_file_path,file_path,port):
     if len(pid_list)>0:
         cleaned_pid_list = stop_server()
         pid_list = cleaned_pid_list
-    
-    server_process = subprocess.Popen([bpy.app.binary_path_python, server_file_path, file_path,str(port)])
+
+    python_path = Path(sys.executable)
+    server_process = subprocess.Popen([python_path, server_file_path, file_path,str(port)])
     pid_list.append(server_process.pid)
     
     # write pid to file
