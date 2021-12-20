@@ -8,7 +8,11 @@ from pathlib import Path
 
 
 O = bpy.ops
+addon_dir = ""
 
+def get_addon_dir(file):
+    global addon_dir
+    addon_dir = os.path.dirname(file)
 
 def select_object(self, obj):
     C = bpy.context
@@ -32,12 +36,10 @@ def select_object_by_mat(self, mat):
             select_object(self, obj)
 
 def get_config_file():
-    script_file = os.path.realpath(__file__)
-    script_dir = os.path.dirname(script_file)
-    process_list_path = os.path.join(script_dir , '..',"Server\process_list.json")
+    process_list_path = os.path.join(addon_dir,"Server","process_list.json")
     return process_list_path
 
-def start_server(server_file_path,file_path,port):
+def start_server(glb_file_path,port):
     
     process_list_path = get_config_file()
     
@@ -50,7 +52,9 @@ def start_server(server_file_path,file_path,port):
         pid_list = cleaned_pid_list
 
     python_path = Path(sys.executable)
-    server_process = subprocess.Popen([python_path, server_file_path, file_path,str(port)])
+    server_file_path = os.path.join(addon_dir,"Server","server.py")
+
+    server_process = subprocess.Popen([python_path, server_file_path, glb_file_path,str(port)])
     pid_list.append(server_process.pid)
     
     # write pid to file

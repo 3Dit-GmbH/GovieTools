@@ -27,11 +27,13 @@ bl_info = {
 
 from . import auto_load
 from .Functions import functions
+import os
 
 auto_load.init()
 
 def register():
     auto_load.register()
+    functions.get_addon_dir(os.path.realpath(__file__))
 
 def unregister():
     auto_load.unregister()

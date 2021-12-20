@@ -28,14 +28,10 @@ class GOVIE_Preview_Operator(bpy.types.Operator):
         file_path = bpy.data.filepath
         project_dir = os.path.dirname(file_path)
         filename = context.scene.export_settings.glb_filename
-        glb_path = os.path.join(project_dir,'glb','')
-        glb_file = glb_path + filename + ".glb"
+        glb_dir = os.path.join(project_dir,'glb','')
+        glb_file_path = glb_dir + filename + ".glb"
 
-        script_file = os.path.realpath(__file__)
-        script_dir = os.path.dirname(script_file)
-        server_path = os.path.join(script_dir, '..',"Server\server.py")
-
-        functions.start_server(server_path,glb_file,self.port)
+        functions.start_server(glb_file_path,self.port)
         # run browser
         bpy.ops.wm.url_open(url = self.url)
         return {"FINISHED"}
