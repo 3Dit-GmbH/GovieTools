@@ -22,7 +22,7 @@ class JoinAnimationOperator(bpy.types.Operator):
             # if hasattr(obj.animation_data,"action"):
             action = obj.animation_data.action
             track = obj.animation_data.nla_tracks.new()
-            track.strips.new(self.anim_name, action.frame_range[0], action)
+            track.strips.new(self.anim_name, int(action.frame_start), action)
             track.name = self.anim_name
             obj.animation_data.action = None
         return {"FINISHED"}

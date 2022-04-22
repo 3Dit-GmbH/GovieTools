@@ -29,7 +29,7 @@ class GOVIE_open_export_folder_Operator(bpy.types.Operator):
         project_dir = os.path.dirname(file_path)
         glb_path = os.path.join(project_dir,'glb','')
             
-        if file_path is not "":
+        if file_path != "":
             subprocess.call("explorer " + glb_path, shell=True)
         else:
             self.report({'INFO'}, 'You need to save Blend file first !')
