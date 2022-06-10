@@ -17,6 +17,7 @@ class Export_Settings(bpy.types.PropertyGroup):
     apply_modifiers: BoolProperty(default = False)
     export_colors: BoolProperty(default = True)
     use_sampling:BoolProperty(default = False)
+    optimize_animation:BoolProperty(default = False)
     group_by_nla:BoolProperty(default = True)
     export_all_influences:BoolProperty(default = False)
     export_image_format:EnumProperty(

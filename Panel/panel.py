@@ -312,6 +312,7 @@ class GLBExportPanel(bpy.types.Panel):
                 row = col.row(align = True)    
                 row.separator(factor=1)
                 row.prop(scene.export_settings,"export_all_influences",text="Include all Bone Influences", toggle = True, icon="BONE_DATA")
+                row.prop(scene.export_settings,"optimize_animation",text="Optimize Animation", toggle = True, icon="KEYFRAME_HLT")
                 row.separator(factor=1)
 
              # Compression Settings

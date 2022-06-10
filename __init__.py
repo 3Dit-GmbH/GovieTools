@@ -17,7 +17,7 @@ bl_info = {
     "author": "Lorenz Wieseke",
     "description": "This add-on helps you transform your model into a web-optimized glb file.",
     "blender": (3,0,0),
-    "version": (0,1,1),
+    "version": (0,1,2),
     "location": "View 3D -> Property Panel (N-Key in 3D View)",    
     "warning": "",
     "category": "Scene",
