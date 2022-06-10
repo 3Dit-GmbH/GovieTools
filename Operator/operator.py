@@ -10,7 +10,6 @@ D = bpy.data
 O = bpy.ops
 
 
-
 # bpy.types.Scene.export_settings.glb_filename = bpy.props.StringProperty(
 #     name="Filename", default="filename")
 
@@ -27,8 +26,8 @@ class GOVIE_open_export_folder_Operator(bpy.types.Operator):
     def execute(self, context):
         file_path = bpy.data.filepath
         project_dir = os.path.dirname(file_path)
-        glb_path = os.path.join(project_dir,'glb','')
-            
+        glb_path = os.path.join(project_dir, 'glb', '')
+
         if file_path != "":
             subprocess.call("explorer " + glb_path, shell=True)
         else:
@@ -36,16 +35,18 @@ class GOVIE_open_export_folder_Operator(bpy.types.Operator):
 
         return {"FINISHED"}
 
+
 class GOVIE_Open_Link_Operator(bpy.types.Operator):
     bl_idname = "scene.open_link"
     bl_label = "Open Website"
     bl_description = "Go to GOVIE Website"
 
-    url : bpy.props.StringProperty(name="url")
+    url: bpy.props.StringProperty(name="url")
 
     @classmethod
     def poll(cls, context):
         return True
+
     def execute(self, context):
         bpy.ops.wm.url_open(url=self.url)
         return {"FINISHED"}
@@ -55,7 +56,6 @@ class GOVIE_Add_Property_Operator(bpy.types.Operator):
     """Add the custom property on the current selected object"""
     bl_idname = "object.add_vis_property"
     bl_label = "Add visibility Property"
-    
 
     @classmethod
     def poll(cls, context):
@@ -109,13 +109,14 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
             return False
 
     def execute(self, context):
-        #check spelling
+        # check spelling
         filename = context.scene.export_settings.glb_filename
-        context.scene.export_settings.glb_filename = functions.convert_umlaut(filename)
-        
-        #check annotation names
+        context.scene.export_settings.glb_filename = functions.convert_umlaut(
+            filename)
+
+        # check annotation names
         functions.rename_annotation()
-        
+
         # GLBTextureTools installed ?
         if addon_utils.check("GLBTextureTools")[1]:
             save_preview_lightmap_setting = bpy.context.scene.texture_settings.preview_lightmap
@@ -123,20 +124,20 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
             bpy.ops.object.preview_lightmap(connect=False)
             bpy.ops.object.lightmap_to_emission(connect=True)
 
-        # blender file saved 
+        # blender file saved
         file_is_saved = bpy.data.is_saved
 
-        # create folder     
+        # create folder
         file_path = bpy.data.filepath
         project_dir = os.path.dirname(file_path)
-        glb_path = os.path.join(project_dir,'glb','')
-        
+        glb_path = os.path.join(project_dir, 'glb', '')
 
         if not os.path.exists(glb_path):
             os.makedirs(glb_path)
-            
+
         # get export settigns
         filename = context.scene.export_settings.glb_filename
+        filepath = glb_path+filename
         use_draco = context.scene.export_settings.use_draco
         export_selected = context.scene.export_settings.export_selected
         export_lights = context.scene.export_settings.export_lights
@@ -144,7 +145,6 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
         apply_modifiers = context.scene.export_settings.apply_modifiers
         use_sampling = context.scene.export_settings.use_sampling
         group_by_nla = context.scene.export_settings.group_by_nla
-        use_draco = context.scene.export_settings.use_draco
         export_image_format = context.scene.export_settings.export_image_format
         draco_compression_level = context.scene.export_settings.draco_compression_level
         postion_quantization = context.scene.export_settings.postion_quantization
@@ -153,34 +153,39 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
         export_all_influences = context.scene.export_settings.export_all_influences
         export_colors = context.scene.export_settings.export_colors
 
+        #blender version
+        version = bpy.app.version_string
+
+        gltf_export_param = {   "filepath":filepath,
+                                "export_draco_mesh_compression_enable":use_draco,
+                                "export_draco_mesh_compression_level":draco_compression_level,
+                                "export_draco_position_quantization":postion_quantization,
+                                "export_draco_normal_quantization":normal_quantization,
+                                "export_draco_texcoord_quantization":texcoord_quantization,
+                                "export_extras":True,
+                                "export_lights":export_lights,
+                                "export_animations":export_animations,
+                                "export_morph":True,
+                                "export_apply":apply_modifiers,
+                                "export_image_format":export_image_format,
+                                "export_nla_strips":group_by_nla,
+                                "export_force_sampling":use_sampling,
+                                "export_all_influences":export_all_influences,
+                                "export_colors":export_colors    }
+
+        if version >= '3.2.0': gltf_export_param['use_selection'] = export_selected 
+        else: gltf_export_param['export_selected'] = export_selected
+
         if file_is_saved:
             # export glb
-            texcoord_quantization = context.scene.export_settings.texcoord_quantization
-
-            bpy.ops.export_scene.gltf(filepath=glb_path+filename, 
-                                    export_draco_mesh_compression_enable=use_draco,
-                                    export_draco_mesh_compression_level=draco_compression_level,
-                                    export_draco_position_quantization=postion_quantization,
-                                    export_draco_normal_quantization=normal_quantization,
-                                    export_draco_texcoord_quantization=texcoord_quantization,
-                                    export_selected=export_selected,
-                                    export_extras=True,
-                                    export_lights=export_lights,
-                                    export_animations=export_animations,
-                                    export_morph=True,
-                                    export_apply=apply_modifiers,
-                                    export_image_format=export_image_format,
-                                    export_nla_strips=group_by_nla,
-                                    export_force_sampling=use_sampling,
-                                    export_all_influences=export_all_influences,
-                                    export_colors=export_colors)
+            bpy.ops.export_scene.gltf(**gltf_export_param)
             # change glb dropdown entry
             context.scene.glb_file_dropdown = context.scene.export_settings.glb_filename
 
             if addon_utils.check("GLBTextureTools")[1]:
                 bpy.ops.object.lightmap_to_emission(connect=False)
-                bpy.ops.object.preview_lightmap(connect=save_preview_lightmap_setting)
-
+                bpy.ops.object.preview_lightmap(
+                    connect=save_preview_lightmap_setting)
 
         else:
             self.report({'INFO'}, 'You need to save Blend file first !')
@@ -218,7 +223,7 @@ class GOVIE_Convert_Text_Operator(bpy.types.Operator):
             if obj.type == 'FONT':
 
                 # create new object for mesh
-                functions.select_object(self,obj)
+                functions.select_object(self, obj)
                 O.object.convert(target='MESH', keep_original=True)
 
                 textMesh = context.object
@@ -268,17 +273,16 @@ class GOVIE_CleanupMesh_Operator(bpy.types.Operator):
 
         for obj in bpy.data.objects:
             if obj.type == 'MESH':
-                
-                functions.select_object(self,obj)
+
+                functions.select_object(self, obj)
                 O.object.editmode_toggle()
                 O.mesh.delete_loose()
                 O.mesh.dissolve_degenerate()
                 O.object.editmode_toggle()
 
         # set back layer settings
-        for collection, exclude_temp_value in zip(collections,exclude_temp_list):
+        for collection, exclude_temp_value in zip(collections, exclude_temp_list):
             collection.exclude = exclude_temp_value
-
 
         self.report({'INFO'}, 'Meshes Cleaned !')
         return {'FINISHED'}
@@ -303,8 +307,9 @@ class GOVIE_CheckTexNodes_Operator(bpy.types.Operator):
             for node in mat.node_tree.nodes:
                 if node.type == "TEX_IMAGE" and node.image is None:
                     mat_name_list.append(mat.name)
-                    self.report({'INFO'}, "Found empty image node in material {}".format(mat.name))
-                    functions.select_object_by_mat(self,mat)
+                    self.report(
+                        {'INFO'}, "Found empty image node in material {}".format(mat.name))
+                    functions.select_object_by_mat(self, mat)
 
         if len(mat_name_list) == 0:
             self.report({'INFO'}, 'No Empty Image Nodes')

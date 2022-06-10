@@ -46,7 +46,7 @@ class SeperateAnimationOperator(bpy.types.Operator):
                 continue
             
             # set actions
-            track = obj.animation_data.nla_tracks.active
+            track = obj.animation_data.nla_tracks[0]
             action_name = track.strips[0].name
             action = bpy.data.actions.get(action_name)
             obj.animation_data.action  = action
