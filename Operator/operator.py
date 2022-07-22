@@ -154,6 +154,7 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
         export_all_influences = context.scene.export_settings.export_all_influences
         export_colors = context.scene.export_settings.export_colors
 
+
         #blender version
         version = bpy.app.version_string
 
@@ -172,7 +173,8 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
                                 "export_nla_strips":group_by_nla,
                                 "export_force_sampling":use_sampling,
                                 "export_all_influences":export_all_influences,
-                                "export_colors":export_colors    }
+                                "export_colors":export_colors,
+                                "use_visible":True    }
 
         if version >= '3.2.0': 
             gltf_export_param['use_selection'] = export_selected 

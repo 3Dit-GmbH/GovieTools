@@ -8,7 +8,7 @@ class GOVIE_Preview_Operator(bpy.types.Operator):
     bl_description = "Press export to display preview of exported file"
     
     port = 8000
-    url = "https://3dit-tools.s3.eu-central-1.amazonaws.com/StaticGLBViewer/index.html#model=http://127.0.0.1:"+str(port)+"/export.glb"
+    url = "https://3dit-tools.s3.eu-central-1.amazonaws.com/StaticGLBViewerV2/index.html"
 
 
     @classmethod
