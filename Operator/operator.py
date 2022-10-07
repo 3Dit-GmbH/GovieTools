@@ -144,7 +144,7 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
         export_animations = context.scene.export_settings.export_animations
         apply_modifiers = context.scene.export_settings.apply_modifiers
         use_sampling = context.scene.export_settings.use_sampling
-        optimize_animation = context.scene.export_settings.use_sampling
+        optimize_animation = context.scene.export_settings.optimize_animation
         group_by_nla = context.scene.export_settings.group_by_nla
         export_image_format = context.scene.export_settings.export_image_format
         draco_compression_level = context.scene.export_settings.draco_compression_level
@@ -176,11 +176,17 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
                                 "export_colors":export_colors,
                                 "use_visible":True    }
 
-        if version >= '3.2.0': 
+        if version < '3.2.0': 
+            gltf_export_param['export_selected'] = export_selected
+
+        if version >= '3.2.0' and version < '3.3.1': 
             gltf_export_param['use_selection'] = export_selected 
             gltf_export_param['optimize_animation_size'] = optimize_animation 
-            
-        else: gltf_export_param['export_selected'] = export_selected
+
+        if version >= '3.3.1':
+            gltf_export_param['use_selection'] = export_selected 
+            gltf_export_param['export_optimize_animation_size'] = optimize_animation 
+
 
         if file_is_saved:
             # export glb
