@@ -371,18 +371,19 @@ class HelpPanel(bpy.types.Panel):
         if lang == 'en_US':
             layout.label(text="To use the full potential of the add-on, ")
             layout.label(text=" you may sign up for a free govie account")
-            layout.operator("scene.open_link",text="Govie Platform",icon='WORLD').url = "https://govie.de/en/blender-registration/?utm_source=blender-add-on&utm_medium=button"
+            layout.operator("scene.open_link",text="Govie Platform",icon='WORLD').url = "https://govie-edior.de/en"
 
 
             layout.label(text="Find help on how to use the add-ons and the govie editor")
-            layout.operator("scene.open_link",text="Add-on Documentation",icon='HELP').url = "https://govie.de/en/tutorials-blender/?utm_source=blender-add-on&utm_medium=button#govie_tools"
-            layout.operator("scene.open_link",text="Govie Tutorial",icon='HELP').url = "https://govie.de/en/tutorials?utm_source=blender-add-on&utm_medium=button"
+            layout.operator("scene.open_link",text="Add-on Documentation",icon='HELP').url = "https://govie-editor.de/en/help/govie-tools/"
+            layout.operator("scene.open_link",text="Govie Tutorial",icon='HELP').url = "https://govie-editor.de/en/help/tutorial/"
+        
         if lang == 'de_DE':
             layout.label(text="Um das volle Potential dieses Add-ons zu nutzen, ")
             layout.label(text="empfehlen wir einen kostenlosen Account des Govie Editors anzulegen")
-            layout.operator("scene.open_link",text="Govie Platform",icon='WORLD').url = "https://govie.de/blender-registration/?utm_source=blender-add-on&utm_medium=button"
+            layout.operator("scene.open_link",text="Govie Platform",icon='WORLD').url = "https://govie-edior.de"
 
 
             layout.label(text="Dokumentation zum den Add-ons und dem Govie Editor")
-            layout.operator("scene.open_link",text="Add-on Documentation",icon='HELP').url = "https://govie.de/tutorials-blender/?utm_source=blender-add-on&utm_medium=button#govie_tools"
-            layout.operator("scene.open_link",text="Govie Tutorial",icon='HELP').url = "https://govie.de/tutorials?utm_source=blender-add-on&utm_medium=button"
+            layout.operator("scene.open_link",text="Add-on Documentation",icon='HELP').url = "https://govie-editor.de"
+            layout.operator("scene.open_link",text="Govie Tutorial",icon='HELP').url = "https://govie-editor.de/en/help/tutorial/"
