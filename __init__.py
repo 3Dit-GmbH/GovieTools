@@ -16,7 +16,7 @@ bl_info = {
     "name": "Govie Tools",
     "author": "Lorenz Wieseke",
     "description": "This add-on helps you transform your model into a web-optimized glb file.",
-    "blender": (3,5,0),
+    "blender": (3,6,0),
     "version": (0,1,5),
     "location": "View 3D -> Property Panel (N-Key in 3D View)",    
     "warning": "",

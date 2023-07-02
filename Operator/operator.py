@@ -186,6 +186,12 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
         if version >= '3.3.1':
             gltf_export_param['use_selection'] = export_selected 
             gltf_export_param['export_optimize_animation_size'] = optimize_animation 
+            
+        if version >= '3.6':
+            gltf_export_param['use_selection'] = export_selected 
+            gltf_export_param['export_optimize_animation_size'] = optimize_animation
+            if group_by_nla is False:
+                gltf_export_param['export_animation_mode'] = "ACTIVE_ACTIONS"
 
 
         if file_is_saved:
