@@ -103,8 +103,8 @@ class BakeParticlesOperator(bpy.types.Operator):
             ps = depsgraph.objects[emitter.name].particle_systems[i]
             
             # update ps hack
-            bpy.data.particles[ps.name].count += 1
-            bpy.data.particles[ps.name].count -= 1
+            # bpy.data.particles[ps.name].count += 1
+            # bpy.data.particles[ps.name].count -= 1
 
             start_frame = bpy.context.scene.frame_start
             end_frame = bpy.context.scene.frame_end
