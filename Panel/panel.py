@@ -225,6 +225,10 @@ class AnimationPanel(bpy.types.Panel):
             simplify_keyframe_op.decimate_ratio = scene.animation_settings.decimate_ratio
             row.separator(factor=0.1)
             layout.separator(factor=0.1)
+         
+        layout.prop(scene,"open_uv_animation_menu",text="UV Animation", icon = 'TRIA_DOWN' if scene.open_uv_animation_menu else 'TRIA_RIGHT' )    
+        if scene.open_uv_animation_menu:
+            layout.operator("object.add_uv_anim", text="Add UV Animation")
         
 
 class VisibilityPropertyPanel(bpy.types.Panel):

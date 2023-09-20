@@ -43,6 +43,7 @@ bpy.types.Scene.open_verification_menu = BoolProperty(default=False)
 bpy.types.Scene.open_animation_manage = BoolProperty(default=False)
 bpy.types.Scene.open_animation_particle = BoolProperty(default=False)
 bpy.types.Scene.open_animation_simplifly = BoolProperty(default=False)
+bpy.types.Scene.open_uv_animation_menu = BoolProperty(default=False)
 
 class ParticleSettings(bpy.types.PropertyGroup):
     key_loc: BoolProperty(name="Key Location", default=1)
