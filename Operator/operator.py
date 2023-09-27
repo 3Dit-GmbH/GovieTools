@@ -99,6 +99,9 @@ class GOVIE_Add_UV_Animation_Operator(bpy.types.Operator):
         # add custom property
         empty["uvAnim"] = active_object.name
         
+        # save emtpy name in scene for later use
+        context.scene["uv_anim_obj"] = empty.name
+         
         # add driver to material mapping node
         if active_object and active_object.active_material:
             material = active_object.active_material
@@ -112,6 +115,8 @@ class GOVIE_Add_UV_Animation_Operator(bpy.types.Operator):
                     break
 
             if mapping_node:
+                # remove driver fist if there is one
+                mapping_node.inputs["Location"].driver_remove("default_value", 0)
                 driverX = mapping_node.inputs["Location"].driver_add("default_value", 0).driver
                 driverX.type = 'SCRIPTED'
                 driverX.expression = empty.name
@@ -123,7 +128,7 @@ class GOVIE_Add_UV_Animation_Operator(bpy.types.Operator):
                 var.targets[0].id = bpy.data.objects[empty.name]
                 var.targets[0].transform_type = 'LOC_X' 
 
-                
+                mapping_node.inputs["Location"].driver_remove("default_value", 1)
                 driverY = mapping_node.inputs["Location"].driver_add("default_value", 1).driver
                 driverY.type = 'SCRIPTED'
                 driverY.expression = "-" + empty.name              
@@ -140,7 +145,8 @@ class GOVIE_Add_UV_Animation_Operator(bpy.types.Operator):
             print("Active object or active material not found.")
 
         active_object.select_set(True)
-        bpy.context.view_layer.objects.active = active_object
+        context.view_layer.objects.active = active_object
+       
         
         return {'FINISHED'}
     

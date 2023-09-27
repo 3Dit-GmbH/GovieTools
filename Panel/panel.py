@@ -33,7 +33,7 @@ class ANNO_UL_List(bpy.types.UIList):
         flt_neworder = []
 
         flt_flags = [self.bitflag_filter_item if hasattr(
-            obj[1].data, "body") and obj[1].data and obj[1].visible_get() is not "None" else 0 for obj in objectList]
+            obj[1].data, "body") and obj[1].data and obj[1].visible_get() != "None" else 0 for obj in objectList]
 
         return flt_flags, flt_neworder
 
@@ -229,6 +229,18 @@ class AnimationPanel(bpy.types.Panel):
         layout.prop(scene,"open_uv_animation_menu",text="UV Animation", icon = 'TRIA_DOWN' if scene.open_uv_animation_menu else 'TRIA_RIGHT' )    
         if scene.open_uv_animation_menu:
             layout.operator("object.add_uv_anim", text="Add UV Animation")
+            
+            empty_name = context.scene["uv_anim_obj"]
+            obj =  bpy.data.objects[empty_name]
+            if obj != "none":
+                layout.label(text="UV Empty")
+                row = layout.row()
+                row.prop(obj, "location")
+                
+                row = layout.row()
+                row.label(text="Frames:")
+                row.prop(scene, "frame_current")
+
         
 
 class VisibilityPropertyPanel(bpy.types.Panel):
