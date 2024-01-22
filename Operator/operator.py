@@ -233,6 +233,8 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
         texcoord_quantization = context.scene.export_settings.texcoord_quantization
         export_all_influences = context.scene.export_settings.export_all_influences
         export_colors = context.scene.export_settings.export_colors
+        join_objects = context.scene.export_settings.join_objects
+        
 
 
         #blender version
@@ -270,13 +272,17 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
         if version >= '3.6':
             gltf_export_param['use_selection'] = export_selected 
             gltf_export_param['export_optimize_animation_size'] = optimize_animation
+            gltf_export_param['use_active_scene'] = True
             if group_by_nla is False:
                 gltf_export_param['export_animation_mode'] = "ACTIVE_ACTIONS"
 
 
         if file_is_saved:
             # export glb
-            bpy.ops.export_scene.gltf(**gltf_export_param)
+            if join_objects:
+                functions.optimize_scene(gltf_export_param)
+            else:
+                bpy.ops.export_scene.gltf(**gltf_export_param)
             # change glb dropdown entry
             context.scene.glb_file_dropdown = context.scene.export_settings.glb_filename
 

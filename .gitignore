@@ -1,5 +1,4 @@
 .vscode/
 .idea/
 __pycache__/
-
-Server/process_list.json
+process_list.json

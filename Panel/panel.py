@@ -363,6 +363,19 @@ class GLBExportPanel(bpy.types.Panel):
                     row.prop(scene.export_settings,"texcoord_quantization",text="Texture Coord. Quantisation")
                     row.separator(factor=1)
 
+         # Optimization Settings
+            if scene.export_settings.open_optimization_settings_menu:
+                box.alert = True
+            box.prop(scene.export_settings,"open_optimization_settings_menu",text="Optimization", icon = 'TRIA_DOWN' if scene.export_settings.open_optimization_settings_menu else 'TRIA_RIGHT' )
+            if scene.export_settings.open_optimization_settings_menu:
+                box.alert = False
+                col = box.column(align = True)
+                row = col.row(align = True)   
+                row.separator(factor=1)   
+                row.prop(scene.export_settings,"join_objects",text="Join aobjects", toggle = True, icon="SNAP_VERTEX")
+                row.separator(factor=1)
+
+
         layout.prop(scene.export_settings,"glb_filename")
         layout.prop(scene,"glb_file_dropdown")
         # layout.operator("export_scene.gltf", text="Dialog Export")
