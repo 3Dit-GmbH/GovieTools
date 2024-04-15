@@ -94,59 +94,56 @@ def rename_annotation():
         if o.name.startswith('Under'):
             o.data.name = o.name
 
-# merge objects
+
+
+
 
 def get_or_create_joined_collection(scene):
-    # Check if "JoinedObjects" collection already exists
     joined_collection = scene.collection.children.get("JoinedObjects")
-
     if not joined_collection:
-        # If not, create a new collection
         joined_collection = bpy.data.collections.new(name="JoinedObjects")
         scene.collection.children.link(joined_collection)
-
     return joined_collection
 
-def join_objects_without_animation_or_visibility(gltf_export_param):
-    # Deselect all objects (implicitly sets the mode to OBJECT)
-    bpy.ops.object.select_all(action='DESELECT')
+def has_material_variants(mesh):
+    return bool(mesh.gltf2_variant_pointer)
 
-    # Reference the current scene
+def join_objects_without_visibility_property():
     current_scene = bpy.context.scene
-
-    # Get or create the "JoinedObjects" collection
-    joined_collection = get_or_create_joined_collection(current_scene)
-
-    # Iterate through all objects in the current scene
-    for obj in current_scene.objects:
-        # Check if the object is a mesh and has neither animation nor visibility property
-        if obj.type == 'MESH' and obj.animation_data is None and obj.get('visibility') is None:
-            joined_collection.objects.link(obj)
-
-    # Select all objects in the joined collection
-    for obj in joined_collection.objects:
-        obj.select_set(True)
-
-    # Set the active object (needed for bpy.ops.object.join())
-    bpy.context.view_layer.objects.active = joined_collection.objects[0] if joined_collection.objects else None
-
-    # Join the selected objects
-    bpy.ops.object.join()
-
-    # Rename the joined object
-    joined_object = bpy.context.active_object
-    joined_object.name = "JoinedObject"
-    bpy.ops.export_scene.gltf(**gltf_export_param)
-
+    bpy.ops.object.select_all(action='DESELECT')
     
+    # Create a temporary collection to group objects for joining
+    temp_collection_name = "TempJoinCollection"
+    temp_collection = bpy.data.collections.new(name=temp_collection_name)
+    current_scene.collection.children.link(temp_collection)
+    
+    for obj in current_scene.objects:
+        if ('visibility' not in obj.keys() and obj.type == 'MESH' and 
+            obj.animation_data is None and not has_material_variants(obj.data)):
+            # Temporarily link object to the temp collection for joining
+            temp_collection.objects.link(obj)
+            current_scene.collection.objects.unlink(obj)
+    
+    # Select and join objects within the temp collection if it's not empty
+    if temp_collection.objects:
+        for obj in temp_collection.objects:
+            obj.select_set(True)
+            current_scene.view_layers[0].objects.active = obj  # Set active object for joining
+
+        # Ensure the context is correct for joining
+        bpy.ops.object.join()  # Join the selected objects
+        
+        # Move the joined object to the original scene collection and cleanup
+        joined_object = current_scene.view_layers[0].objects.active
+        current_scene.collection.objects.link(joined_object)  # Link back to the main collection
+        bpy.data.collections.remove(temp_collection)  # Remove the temporary collection
+        
+    else:
+        # If no objects met the criteria, remove the temporary collection
+        bpy.data.collections.remove(temp_collection)
 
 def optimize_scene(gltf_export_param):
-    # Create a copy of the current scene
-    bpy.ops.scene.new(type='FULL_COPY')
-    copied_scene = bpy.context.scene
-
-    # Run the join_objects_without_animation_or_visibility() function on the copied scene
-    join_objects_without_animation_or_visibility(gltf_export_param)
-
-    # Delete the copied scene
-    bpy.data.scenes.remove(copied_scene)
+    bpy.ops.wm.save_mainfile()
+    join_objects_without_visibility_property()
+    bpy.ops.export_scene.gltf(**gltf_export_param)
+    bpy.ops.wm.open_mainfile(filepath=bpy.data.filepath)
