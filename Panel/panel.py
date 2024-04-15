@@ -128,6 +128,42 @@ class VIS_UL_List(bpy.types.UIList):
             "visibility") is not None and obj[1].visible_get() else 0 for obj in objectList]
 
         return flt_flags, flt_neworder
+class CLICK_UL_List(bpy.types.UIList):
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index, flt_flag):
+
+        selOff = 'RADIOBUT_OFF'
+        selOn = 'RADIOBUT_ON'
+
+        # 'DEFAULT' and 'COMPACT' layout types should usually use the same draw code.
+        if self.layout_type in {'DEFAULT', 'COMPACT'}:
+
+            row = layout.row()
+            split = row.split(factor=0.2)
+
+            if context.object is not None:
+                if (item.name == context.object.name):
+                    split.label(text="", icon=selOn)
+                    split = split.split(factor=0.6)
+                    split.prop(item, "name", text="")
+                else:
+                    split.label(text="", icon=selOff)
+                    split = split.split(factor=0.6)
+                    split.label(text=item.name)
+
+
+    def filter_items(self, context, data, propname):
+        objects = getattr(data, propname)
+        objectList = objects.items()
+
+        # Default return values.
+        flt_flags = []
+        flt_neworder = []
+
+        # get only items that have visibility property
+        flt_flags = [self.bitflag_filter_item if obj[1].get(
+            "bookmark") is not None and obj[1].visible_get() else 0 for obj in objectList]
+
+        return flt_flags, flt_neworder
 
 
 class AnnotationPanel(bpy.types.Panel):
@@ -259,8 +295,30 @@ class VisibilityPropertyPanel(bpy.types.Panel):
                 
         layout.template_list("VIS_UL_List", "", scene,
                              "objects", scene, "object_index")
-        layout.operator("object.add_vis_property", text="Add Property")
-        layout.operator("object.remove_vis_property", text="Remove Property")
+        op_add = layout.operator("object.add_property", text="Add Property")
+        op_rm = layout.operator("object.remove_property", text="Remove Property")
+        op_add.property_type="visibility"
+        op_rm.property_type="visibility"
+class ClickableObjectPropertyPanel(bpy.types.Panel):
+    bl_idname = "CLICK_PT_custom_prop_panel"
+    bl_label = "Clickable Object"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_category = 'Govie Tools'
+    bl_order = 5
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+         
+        gui_functions.headline(layout,(0.2,"ACTIVE"),(0.8,"OBJECT NAME"))
+                
+        layout.template_list("CLICK_UL_List", "", scene,
+                             "objects", scene, "object_index")
+        op_add = layout.operator("object.add_property", text="Add Property")
+        op_rm = layout.operator("object.remove_property", text="Remove Property")
+        op_add.property_type="clickable"
+        op_rm.property_type="clickable"
 
 
 class GLBExportPanel(bpy.types.Panel):

@@ -54,9 +54,11 @@ class GOVIE_Open_Link_Operator(bpy.types.Operator):
 
 class GOVIE_Add_Property_Operator(bpy.types.Operator):
     """Add the custom property on the current selected object"""
-    bl_idname = "object.add_vis_property"
-    bl_label = "Add visibility Property"
+    bl_idname = "object.add_property"
+    bl_label = "Add custom Property"
 
+    property_type: bpy.props.StringProperty(name="custom_property_name")
+    
     @classmethod
     def poll(cls, context):
         if context.object is None:
@@ -67,102 +69,24 @@ class GOVIE_Add_Property_Operator(bpy.types.Operator):
     def execute(self, context):
         selected_objects = context.selected_objects
         for obj in selected_objects:
-            obj["visibility"] = 1
-            obj.visibiliy_bool = 1
+            if self.property_type == "visibility":
+                obj["visibility"] = 1
+                obj.visibiliy_bool = 1
+            if self.property_type == "clickable":
+                obj["bookmark"] = "bookmark"
+
 
         return {'FINISHED'}
-class GOVIE_Add_UV_Animation_Operator(bpy.types.Operator):
-    """Create UV Animation for selected object"""
-    bl_idname = "object.add_uv_anim"
-    bl_label = "Add UV Animation"
-
-    @classmethod
-    def poll(cls, context):
-        if context.object is None:
-            return False
-        else:
-            return True
-
-    def execute(self, context):
-        active_object = context.active_object
-        new_name = active_object.name + "_uv_anim_controller"
-        
-        if bpy.data.objects.get(new_name):
-            empty = bpy.data.objects[new_name]
-        else:
-            bpy.ops.object.empty_add(type='PLAIN_AXES', align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
-            empty = context.active_object
-            empty.name = new_name
-            
-            
-        
-        # add custom property
-        empty["uvAnim"] = active_object.name
-        
-        # save emtpy name in scene for later use
-        context.scene["uv_anim_obj"] = empty.name
-         
-        # add driver to material mapping node
-        if active_object and active_object.active_material:
-            material = active_object.active_material
-
-            # Find the Mapping node in the material's node tree
-            mapping_node = None
-            for node in material.node_tree.nodes:
-                print(node.type)
-                if node.type == 'MAPPING':
-                    mapping_node = node
-                    break
-
-            if mapping_node:
-                # remove driver fist if there is one
-                mapping_node.inputs["Location"].driver_remove("default_value", 0)
-                driverX = mapping_node.inputs["Location"].driver_add("default_value", 0).driver
-                driverX.type = 'SCRIPTED'
-                driverX.expression = empty.name
-                
-                 # Add the Empty object as a variable target
-                var = driverX.variables.new()
-                var.name = empty.name
-                var.type = 'TRANSFORMS'
-                var.targets[0].id = bpy.data.objects[empty.name]
-                var.targets[0].transform_type = 'LOC_X' 
-
-                mapping_node.inputs["Location"].driver_remove("default_value", 1)
-                driverY = mapping_node.inputs["Location"].driver_add("default_value", 1).driver
-                driverY.type = 'SCRIPTED'
-                driverY.expression = "-" + empty.name              
-                
-                var = driverY.variables.new()
-                var.name = empty.name
-                var.type = 'TRANSFORMS'
-                var.targets[0].id = bpy.data.objects[empty.name]
-                var.targets[0].transform_type = 'LOC_Z' 
-                
-            else:
-                print("Mapping node not found in the material's node tree.")
-        else:
-            print("Active object or active material not found.")
-
-        active_object.select_set(True)
-        context.view_layer.objects.active = active_object
-       
-        
-        return {'FINISHED'}
-    
-    
-
-
 class GOVIE_Remove_Property_Operator(bpy.types.Operator):
     """Remove the custom property on the current selected object"""
-    bl_idname = "object.remove_vis_property"
+    bl_idname = "object.remove_property"
     bl_label = "Remove visibility Property"
+    
+    property_type: bpy.props.StringProperty(name="custom_property_name")
 
     @classmethod
     def poll(cls, context):
         if context.object is None:
-            return False
-        if context.object.get("visibility") is None:
             return False
         else:
             return True
@@ -170,8 +94,13 @@ class GOVIE_Remove_Property_Operator(bpy.types.Operator):
     def execute(self, context):
         selected_objects = context.selected_objects
         for obj in selected_objects:
-            if obj.get("visibility"):
-                del obj["visibility"]
+            if self.property_type == "visibility":
+                if "visibility" in obj.keys():
+                    del obj["visibility"]
+            if self.property_type == "clickable":
+                if "bookmark" in obj.keys():
+                    del obj["bookmark"]        
+            
             
         return {'FINISHED'}
 
@@ -419,3 +348,85 @@ class GOVIE_CheckTexNodes_Operator(bpy.types.Operator):
             self.report({'INFO'}, 'No Empty Image Nodes')
 
         return {'FINISHED'}
+
+
+class GOVIE_Add_UV_Animation_Operator(bpy.types.Operator):
+    """Create UV Animation for selected object"""
+    bl_idname = "object.add_uv_anim"
+    bl_label = "Add UV Animation"
+
+    @classmethod
+    def poll(cls, context):
+        if context.object is None:
+            return False
+        else:
+            return True
+
+    def execute(self, context):
+        active_object = context.active_object
+        new_name = active_object.name + "_uv_anim_controller"
+        
+        if bpy.data.objects.get(new_name):
+            empty = bpy.data.objects[new_name]
+        else:
+            bpy.ops.object.empty_add(type='PLAIN_AXES', align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
+            empty = context.active_object
+            empty.name = new_name
+            
+            
+        
+        # add custom property
+        empty["uvAnim"] = active_object.name
+        
+        # save emtpy name in scene for later use
+        context.scene["uv_anim_obj"] = empty.name
+         
+        # add driver to material mapping node
+        if active_object and active_object.active_material:
+            material = active_object.active_material
+
+            # Find the Mapping node in the material's node tree
+            mapping_node = None
+            for node in material.node_tree.nodes:
+                print(node.type)
+                if node.type == 'MAPPING':
+                    mapping_node = node
+                    break
+
+            if mapping_node:
+                # remove driver fist if there is one
+                mapping_node.inputs["Location"].driver_remove("default_value", 0)
+                driverX = mapping_node.inputs["Location"].driver_add("default_value", 0).driver
+                driverX.type = 'SCRIPTED'
+                driverX.expression = empty.name
+                
+                 # Add the Empty object as a variable target
+                var = driverX.variables.new()
+                var.name = empty.name
+                var.type = 'TRANSFORMS'
+                var.targets[0].id = bpy.data.objects[empty.name]
+                var.targets[0].transform_type = 'LOC_X' 
+
+                mapping_node.inputs["Location"].driver_remove("default_value", 1)
+                driverY = mapping_node.inputs["Location"].driver_add("default_value", 1).driver
+                driverY.type = 'SCRIPTED'
+                driverY.expression = "-" + empty.name              
+                
+                var = driverY.variables.new()
+                var.name = empty.name
+                var.type = 'TRANSFORMS'
+                var.targets[0].id = bpy.data.objects[empty.name]
+                var.targets[0].transform_type = 'LOC_Z' 
+                
+            else:
+                print("Mapping node not found in the material's node tree.")
+        else:
+            print("Active object or active material not found.")
+
+        active_object.select_set(True)
+        context.view_layer.objects.active = active_object
+       
+        
+        return {'FINISHED'}
+    
+    
