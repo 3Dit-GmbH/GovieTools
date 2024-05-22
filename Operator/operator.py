@@ -73,7 +73,7 @@ class GOVIE_Add_Property_Operator(bpy.types.Operator):
                 obj["visibility"] = 1
                 obj.visibiliy_bool = 1
             if self.property_type == "clickable":
-                obj["bookmark"] = "bookmark"
+                obj["clickablePart"] = "clickablePart"
 
 
         return {'FINISHED'}
@@ -98,8 +98,8 @@ class GOVIE_Remove_Property_Operator(bpy.types.Operator):
                 if "visibility" in obj.keys():
                     del obj["visibility"]
             if self.property_type == "clickable":
-                if "bookmark" in obj.keys():
-                    del obj["bookmark"]        
+                if "clickablePart" in obj.keys():
+                    del obj["clickablePart"]        
             
             
         return {'FINISHED'}

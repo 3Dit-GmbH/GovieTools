@@ -161,7 +161,7 @@ class CLICK_UL_List(bpy.types.UIList):
 
         # get only items that have visibility property
         flt_flags = [self.bitflag_filter_item if obj[1].get(
-            "bookmark") is not None and obj[1].visible_get() else 0 for obj in objectList]
+            "clickablePart") is not None and obj[1].visible_get() else 0 for obj in objectList]
 
         return flt_flags, flt_neworder
 
