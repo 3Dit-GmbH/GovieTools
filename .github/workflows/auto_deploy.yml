@@ -26,7 +26,7 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
-          draft: false
+          draft: true # creaete a draft release to add more details later on
           prerelease: false
 
       - name: Upload Release Asset
