@@ -16,7 +16,7 @@ jobs:
 
       - name: Zip Release Folder
         run: |
-          cd ${{ github.event.repository.name }} && zip -r ${{ github.event.repository.name }}.zip ${{ github.event.repository.name }}
+          zip -r ${{ github.event.repository.name }}.zip ${{ github.event.repository.name }}
 
       - name: Create Release
         id: create_release
