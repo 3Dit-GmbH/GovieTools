@@ -14,15 +14,15 @@
 
 bl_info = {
     "name": "Govie Tools",
-    "author": "Lorenz Wieseke",
-    "description": "This add-on helps you transform your model into a web-optimized glb file.",
+    "author": "Lorenz Wieseke, 3D Interaction Technologies GmbH (contact@govie.de)",
+    "description": "Transform your model into a web-optimized GLB file for use in the Govie Editor.",
     "blender": (4,0,0),
-    "version": (0,1,8),
-    "location": "View 3D -> Property Panel (N-Key in 3D View)",    
-    "warning": "",
+    "version": (1,0,1),
+    "location": "View 3D > Property Panel (N-Key in 3D View)",    
+    "warning": "This add-on officially supports Blender 4.0.0.",
     "category": "Scene",
-    "wiki_url": "https://govie.de/en/tutorials-blender/?utm_source=blender-add-on&utm_medium=button#govie_tools",
-    "tracker_url": "https://github.com/LorenzWieseke/GovieTools/issues",
+    "wiki_url": "https://govie-editor.de/en/help/govie-tools?utm_source=blender-add-on&utm_medium=button",
+    "tracker_url": "https://github.com/3Dit-GmbH/GovieTools/issues",
 }
 
 from . import auto_load
