@@ -1,4 +1,4 @@
-# Copyright (c) 2018 Lorenz Wieseke
+# Copyright (c) 2024 Lorenz Wieseke via 3D Interaction Technologies GmbH
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 3 of the License, or
