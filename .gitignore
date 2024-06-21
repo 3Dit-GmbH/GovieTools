@@ -2,3 +2,5 @@
 .idea/
 __pycache__/
 process_list.json
+
+debug.log

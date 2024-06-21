@@ -10,10 +10,6 @@ D = bpy.data
 O = bpy.ops
 
 
-# bpy.types.Scene.export_settings.glb_filename = bpy.props.StringProperty(
-#     name="Filename", default="filename")
-
-
 class GOVIE_open_export_folder_Operator(bpy.types.Operator):
     bl_idname = "scene.open_export_folder"
     bl_label = "Open Folder"
@@ -221,7 +217,7 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
                     connect=save_preview_lightmap_setting)
 
         else:
-            self.report({'INFO'}, 'You need to save Blend file first !')
+            self.report({'INFO'}, 'You need to save the Blend file first!')
 
         return {'FINISHED'}
 
@@ -229,7 +225,7 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
 class GOVIE_Convert_Text_Operator(bpy.types.Operator):
     bl_idname = "object.convert_text"
     bl_label = "EXPORT_GLTF"
-    bl_description = "Convert text curves to mesh instances and put them in new collection named annotation"
+    bl_description = "Convert text curves to mesh instances and put them in a new collection named annotation"
 
     @classmethod
     def poll(cls, context):
