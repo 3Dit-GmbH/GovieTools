@@ -17,7 +17,7 @@ bl_info = {
     "author": "Lorenz Wieseke, 3D Interaction Technologies GmbH (contact@govie.de)",
     "description": "Transform your model into a web-optimized GLB file for use in the Govie Editor.",
     "blender": (4,0,0),
-    "version": (1,0,0),
+    "version": (1,0,5),
     "location": "View 3D > Property Panel (N-Key in 3D View)",    
     "warning": "This add-on officially supports Blender version 4",
     "category": "Scene",
