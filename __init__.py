@@ -19,7 +19,7 @@ bl_info = {
     "blender": (4,0,0),
     "version": (1,0,5),
     "location": "View 3D > Property Panel (N-Key in 3D View)",    
-    "warning": "This add-on officially supports Blender version 4",
+    "warning": "",
     "category": "Scene",
     "wiki_url": "https://govie-editor.de/en/help/govie-tools?utm_source=blender-add-on&utm_medium=button",
     "tracker_url": "https://github.com/3Dit-GmbH/GovieTools/issues",
