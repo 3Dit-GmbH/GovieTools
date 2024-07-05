@@ -12,28 +12,30 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import os
+from .Functions import functions
+from . import auto_load
 bl_info = {
     "name": "Govie Tools",
     "author": "Lorenz Wieseke, 3D Interaction Technologies GmbH (contact@govie.de)",
     "description": "Transform your model into a web-optimized GLB file for use in the Govie Editor.",
-    "blender": (4,0,0),
-    "version": (1,0,5),
-    "location": "View 3D > Property Panel (N-Key in 3D View)",    
+    "blender": (4, 0, 0),
+    "version": (1, 0, 6),
+    "location": "View 3D > Property Panel (N-Key in 3D View)",
     "warning": "",
     "category": "Scene",
     "wiki_url": "https://govie-editor.de/en/help/govie-tools?utm_source=blender-add-on&utm_medium=button",
     "tracker_url": "https://github.com/3Dit-GmbH/GovieTools/issues",
 }
 
-from . import auto_load
-from .Functions import functions
-import os
 
 auto_load.init()
+
 
 def register():
     auto_load.register()
     functions.get_addon_dir(os.path.realpath(__file__))
+
 
 def unregister():
     auto_load.unregister()

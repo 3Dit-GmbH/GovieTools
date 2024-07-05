@@ -1,51 +1,54 @@
 import bpy
-import os, fnmatch
+import os
+import fnmatch
 from .. Functions import gui_functions
-from bpy.props import StringProperty,BoolProperty,IntProperty,PointerProperty,EnumProperty,FloatProperty
+from bpy.props import StringProperty, BoolProperty, IntProperty, PointerProperty, EnumProperty, FloatProperty
 
 
-
-class Export_Settings(bpy.types.PropertyGroup):  
-    open_export_settings_menu: BoolProperty(default = False)    
-    open_scene_settings_menu: BoolProperty(default = False)    
-    open_animation_settings_menu: BoolProperty(default = False)    
-    open_compression_settings_menu: BoolProperty(default = False)    
-    open_optimization_settings_menu: BoolProperty(default = False)    
-    glb_filename: StringProperty(name="Filename",default="filename")   
-    export_selected: BoolProperty(default = False)
-    join_objects: BoolProperty(default = False)
-    export_lights: BoolProperty(default = False)
-    export_animations: BoolProperty(default = True)
-    apply_modifiers: BoolProperty(default = False)
-    export_colors: BoolProperty(default = True)
-    use_sampling:BoolProperty(default = False)
-    optimize_animation:BoolProperty(default = False)
-    group_by_nla:BoolProperty(default = True)
-    export_all_influences:BoolProperty(default = False)
-    export_image_format:EnumProperty(
+class Export_Settings(bpy.types.PropertyGroup):
+    open_export_settings_menu: BoolProperty(default=False)
+    open_scene_settings_menu: BoolProperty(default=False)
+    open_animation_settings_menu: BoolProperty(default=False)
+    open_compression_settings_menu: BoolProperty(default=False)
+    open_optimization_settings_menu: BoolProperty(default=False)
+    glb_filename: StringProperty(name="Filename", default="filename")
+    export_selected: BoolProperty(default=False)
+    join_objects: BoolProperty(default=False)
+    export_lights: BoolProperty(default=False)
+    export_animations: BoolProperty(default=True)
+    apply_modifiers: BoolProperty(default=False)
+    export_colors: BoolProperty(default=True)
+    use_sampling: BoolProperty(default=False)
+    optimize_animation: BoolProperty(default=False)
+    group_by_nla: BoolProperty(default=True)
+    export_all_influences: BoolProperty(default=False)
+    export_image_format: EnumProperty(
         name="Image Compression",
         items=(
-               ('AUTO', 'Automatic', 'Determine the image format from the blender image name.'),
-               ('JPEG', 'JPEG', 'Convert Images to JPEG, images with alpha still use PNG')
-            ))
-    use_draco: BoolProperty(default = True)
-    draco_compression_level: IntProperty(default = 6)
-    postion_quantization: IntProperty(default = 14,min=0,max=30)
-    normal_quantization: IntProperty(default = 10,min=0,max=30)
-    texcoord_quantization: IntProperty(default = 12,min=0,max=30)
-
+            ('AUTO', 'Automatic',
+             'Determine the image format from the blender image name.'),
+            ('JPEG', 'JPEG', 'Convert Images to JPEG, images with alpha still use PNG')
+        ))
+    use_draco: BoolProperty(default=True)
+    draco_compression_level: IntProperty(default=6)
+    postion_quantization: IntProperty(default=14, min=0, max=30)
+    normal_quantization: IntProperty(default=10, min=0, max=30)
+    texcoord_quantization: IntProperty(default=12, min=0, max=30)
 
 
 bpy.utils.register_class(Export_Settings)
 
 bpy.types.Scene.export_settings = PointerProperty(type=Export_Settings)
-bpy.types.Scene.object_index = IntProperty(name = "Index for Visibility UI List", update=gui_functions.update_sel_item)
-bpy.types.Object.visibiliy_bool = BoolProperty(name = "Mapping for Property Value", update=gui_functions.remap_vis_prop)
+bpy.types.Scene.object_index = IntProperty(
+    name="Index for Visibility UI List", update=gui_functions.update_sel_item)
+bpy.types.Object.visibiliy_bool = BoolProperty(
+    name="Mapping for Property Value", update=gui_functions.remap_vis_prop)
 bpy.types.Scene.open_verification_menu = BoolProperty(default=False)
 bpy.types.Scene.open_animation_manage = BoolProperty(default=False)
 bpy.types.Scene.open_animation_particle = BoolProperty(default=False)
 bpy.types.Scene.open_animation_simplifly = BoolProperty(default=False)
 bpy.types.Scene.open_uv_animation_menu = BoolProperty(default=False)
+
 
 class ParticleSettings(bpy.types.PropertyGroup):
     key_loc: BoolProperty(name="Key Location", default=1)
@@ -78,12 +81,13 @@ class AnimationSettings(bpy.types.PropertyGroup):
 bpy.utils.register_class(AnimationSettings)
 bpy.types.Scene.animation_settings = PointerProperty(type=AnimationSettings)
 
+
 def get_glb_files(self, context):
     glb_files = []
-        
+
     file_path = bpy.data.filepath
     project_dir = os.path.dirname(file_path)
-    glb_path = os.path.join(project_dir,'glb','')
+    glb_path = os.path.join(project_dir, 'glb', '')
 
     if not os.path.exists(glb_path):
         return glb_files
@@ -93,9 +97,10 @@ def get_glb_files(self, context):
     for entry in listOfFiles:
         if fnmatch.fnmatch(entry, pattern):
             filename, file_extension = os.path.splitext(entry)
-            glb_files.append((filename,filename,"Override file :" + entry))
+            glb_files.append((filename, filename, "Override file :" + entry))
 
     return glb_files
+
 
 def update_filename(self, value):
     scene = self
@@ -108,7 +113,9 @@ bpy.types.Scene.glb_file_dropdown = bpy.props.EnumProperty(
     update=update_filename)
 
 
-def run_help_operator(self,context):
-   bpy.ops.scene.help_govie(image_name ="help_overlay_govie_tools.png" )
+def run_help_operator(self, context):
+    bpy.ops.scene.help_govie(image_name="help_overlay_govie_tools.png")
 
-bpy.types.Scene.help_govie_tools = BoolProperty(default=False,update=run_help_operator)
+
+bpy.types.Scene.help_govie_tools = BoolProperty(
+    default=False, update=run_help_operator)
