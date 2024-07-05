@@ -54,7 +54,7 @@ class GOVIE_Add_Property_Operator(bpy.types.Operator):
     bl_label = "Add custom Property"
 
     property_type: bpy.props.StringProperty(name="custom_property_name")
-    
+
     @classmethod
     def poll(cls, context):
         if context.object is None:
@@ -71,13 +71,14 @@ class GOVIE_Add_Property_Operator(bpy.types.Operator):
             if self.property_type == "clickable":
                 obj["clickablePart"] = "clickablePart"
 
-
         return {'FINISHED'}
+
+
 class GOVIE_Remove_Property_Operator(bpy.types.Operator):
     """Remove the custom property on the current selected object"""
     bl_idname = "object.remove_property"
     bl_label = "Remove visibility Property"
-    
+
     property_type: bpy.props.StringProperty(name="custom_property_name")
 
     @classmethod
@@ -95,9 +96,8 @@ class GOVIE_Remove_Property_Operator(bpy.types.Operator):
                     del obj["visibility"]
             if self.property_type == "clickable":
                 if "clickablePart" in obj.keys():
-                    del obj["clickablePart"]        
-            
-            
+                    del obj["clickablePart"]
+
         return {'FINISHED'}
 
 
@@ -159,48 +159,47 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
         export_all_influences = context.scene.export_settings.export_all_influences
         export_colors = context.scene.export_settings.export_colors
         join_objects = context.scene.export_settings.join_objects
-        
 
+        # blender version
+        version = bpy.app.version
 
-        #blender version
-        version = bpy.app.version_string
+        gltf_export_param = {"filepath": filepath,
+                             "export_draco_mesh_compression_enable": use_draco,
+                             "export_draco_mesh_compression_level": draco_compression_level,
+                             "export_draco_position_quantization": postion_quantization,
+                             "export_draco_normal_quantization": normal_quantization,
+                             "export_draco_texcoord_quantization": texcoord_quantization,
+                             "export_extras": True,
+                             "export_lights": export_lights,
+                             "export_animations": export_animations,
+                             "export_morph": True,
+                             "export_apply": apply_modifiers,
+                             "export_image_format": export_image_format,
+                             "export_nla_strips": group_by_nla,
+                             "export_force_sampling": use_sampling,
+                             "export_all_influences": export_all_influences,
+                             "use_visible": True}
 
-        gltf_export_param = {   "filepath":filepath,
-                                "export_draco_mesh_compression_enable":use_draco,
-                                "export_draco_mesh_compression_level":draco_compression_level,
-                                "export_draco_position_quantization":postion_quantization,
-                                "export_draco_normal_quantization":normal_quantization,
-                                "export_draco_texcoord_quantization":texcoord_quantization,
-                                "export_extras":True,
-                                "export_lights":export_lights,
-                                "export_animations":export_animations,
-                                "export_morph":True,
-                                "export_apply":apply_modifiers,
-                                "export_image_format":export_image_format,
-                                "export_nla_strips":group_by_nla,
-                                "export_force_sampling":use_sampling,
-                                "export_all_influences":export_all_influences,
-                                "export_colors":export_colors,
-                                "use_visible":True    }
-
-        if version < '3.2.0': 
+        if version < (3, 2, 0):
             gltf_export_param['export_selected'] = export_selected
 
-        if version >= '3.2.0' and version < '3.3.1': 
-            gltf_export_param['use_selection'] = export_selected 
-            gltf_export_param['optimize_animation_size'] = optimize_animation 
+        if version >= (3, 2, 0) and version < (3, 3, 1):
+            gltf_export_param['use_selection'] = export_selected
+            gltf_export_param['optimize_animation_size'] = optimize_animation
 
-        if version >= '3.3.1':
-            gltf_export_param['use_selection'] = export_selected 
-            gltf_export_param['export_optimize_animation_size'] = optimize_animation 
-            
-        if version >= '3.6':
-            gltf_export_param['use_selection'] = export_selected 
+        if version >= (3, 3, 1):
+            gltf_export_param['use_selection'] = export_selected
+            gltf_export_param['export_optimize_animation_size'] = optimize_animation
+
+        if version >= (3, 6, 0):
+            gltf_export_param['use_selection'] = export_selected
             gltf_export_param['export_optimize_animation_size'] = optimize_animation
             gltf_export_param['use_active_scene'] = True
             if group_by_nla is False:
                 gltf_export_param['export_animation_mode'] = "ACTIVE_ACTIONS"
 
+        if version < (4, 2, 0):
+            gltf_export_param["export_colors"] = export_colors
 
         if file_is_saved:
             # export glb
@@ -361,22 +360,21 @@ class GOVIE_Add_UV_Animation_Operator(bpy.types.Operator):
     def execute(self, context):
         active_object = context.active_object
         new_name = active_object.name + "_uv_anim_controller"
-        
+
         if bpy.data.objects.get(new_name):
             empty = bpy.data.objects[new_name]
         else:
-            bpy.ops.object.empty_add(type='PLAIN_AXES', align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
+            bpy.ops.object.empty_add(
+                type='PLAIN_AXES', align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
             empty = context.active_object
             empty.name = new_name
-            
-            
-        
+
         # add custom property
         empty["uvAnim"] = active_object.name
-        
+
         # save emtpy name in scene for later use
         context.scene["uv_anim_obj"] = empty.name
-         
+
         # add driver to material mapping node
         if active_object and active_object.active_material:
             material = active_object.active_material
@@ -391,29 +389,33 @@ class GOVIE_Add_UV_Animation_Operator(bpy.types.Operator):
 
             if mapping_node:
                 # remove driver fist if there is one
-                mapping_node.inputs["Location"].driver_remove("default_value", 0)
-                driverX = mapping_node.inputs["Location"].driver_add("default_value", 0).driver
+                mapping_node.inputs["Location"].driver_remove(
+                    "default_value", 0)
+                driverX = mapping_node.inputs["Location"].driver_add(
+                    "default_value", 0).driver
                 driverX.type = 'SCRIPTED'
                 driverX.expression = empty.name
-                
-                 # Add the Empty object as a variable target
+
+                # Add the Empty object as a variable target
                 var = driverX.variables.new()
                 var.name = empty.name
                 var.type = 'TRANSFORMS'
                 var.targets[0].id = bpy.data.objects[empty.name]
-                var.targets[0].transform_type = 'LOC_X' 
+                var.targets[0].transform_type = 'LOC_X'
 
-                mapping_node.inputs["Location"].driver_remove("default_value", 1)
-                driverY = mapping_node.inputs["Location"].driver_add("default_value", 1).driver
+                mapping_node.inputs["Location"].driver_remove(
+                    "default_value", 1)
+                driverY = mapping_node.inputs["Location"].driver_add(
+                    "default_value", 1).driver
                 driverY.type = 'SCRIPTED'
-                driverY.expression = "-" + empty.name              
-                
+                driverY.expression = "-" + empty.name
+
                 var = driverY.variables.new()
                 var.name = empty.name
                 var.type = 'TRANSFORMS'
                 var.targets[0].id = bpy.data.objects[empty.name]
-                var.targets[0].transform_type = 'LOC_Z' 
-                
+                var.targets[0].transform_type = 'LOC_Z'
+
             else:
                 print("Mapping node not found in the material's node tree.")
         else:
@@ -421,8 +423,5 @@ class GOVIE_Add_UV_Animation_Operator(bpy.types.Operator):
 
         active_object.select_set(True)
         context.view_layer.objects.active = active_object
-       
-        
+
         return {'FINISHED'}
-    
-    
