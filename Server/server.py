@@ -5,6 +5,7 @@ import sys
 
 port = int(sys.argv[2])
 
+
 class RequestHandler(BaseHTTPRequestHandler):
 
     file_path = sys.argv[1]
@@ -21,12 +22,13 @@ class RequestHandler(BaseHTTPRequestHandler):
         self._send_cors_headers()
         self.end_headers()
 
-        with open(self.file_path, 'rb') as file: 
-            self.wfile.write(file.read()) 
-        
+        with open(self.file_path, 'rb') as file:
+            self.wfile.write(file.read())
+
         response = {}
         response["status"] = "OK"
 
+
 httpd = HTTPServer(("127.0.0.1", port), RequestHandler)
-print("Hosting server http://127.0.0.1:",port)
+print("Hosting server http://127.0.0.1:", port)
 httpd.serve_forever()

@@ -35,20 +35,22 @@ fragment_shader = '''
 
 '''
 
+
 class Help_Draw():
-    
-    def __init__(self,context):
+
+    def __init__(self, context):
         self.context = context
 
     def add_handle(self):
-        self.handle = bpy.types.SpaceView3D.draw_handler_add(self.bind_image,(),'WINDOW', 'POST_PIXEL')  
-       
+        self.handle = bpy.types.SpaceView3D.draw_handler_add(
+            self.bind_image, (), 'WINDOW', 'POST_PIXEL')
+
     def remove_handle(self):
         if self.handle:
-            bpy.types.SpaceView3D.draw_handler_remove(self.handle, 'WINDOW') 
-            self.handle = None   
+            bpy.types.SpaceView3D.draw_handler_remove(self.handle, 'WINDOW')
+            self.handle = None
 
-    def update(self,x,y,width,height):        
+    def update(self, x, y, width, height):
         self.x = x
         self.y = y
         self.width = width
@@ -58,22 +60,23 @@ class Help_Draw():
         global fragment_shader
 
         self.shader = gpu.types.GPUShader(vertex_shader, fragment_shader)
-   
+
         self.batch = batch_for_shader(
             self.shader, 'TRI_FAN',
-            {  
-                "pos":  ((self.x, self.y),(self.width, self.y),(self.width, self.height),(self.x,self.height)),
+            {
+                "pos":  ((self.x, self.y), (self.width, self.y), (self.width, self.height), (self.x, self.height)),
                 "texCoord": ((0, 0), (1, 0), (1, 1), (0, 1)),
             },
         )
-    
+
     def set_image(self, img_name):
         script_file = os.path.realpath(__file__)
         script_dir = os.path.dirname(script_file)
-        
+
         rel_filepath = bpy.path.abspath(script_dir+"//img/"+img_name)
         try:
-            self.image = bpy.data.images.load(rel_filepath, check_existing=True)   
+            self.image = bpy.data.images.load(
+                rel_filepath, check_existing=True)
             self.image.gl_load()
             return self.image
         except:
@@ -81,29 +84,28 @@ class Help_Draw():
 
     def get_image(self):
         return self.image
-        
 
-    def draw_text(self,text):
+    def draw_text(self, text):
         font_id = 0
         blf.position(font_id, self.x, self.y, 0)
         blf.size(font_id, 50, 72)
         blf.draw(font_id, text)
-  
+
     def bind_image(self):
         bgl.glEnable(bgl.GL_BLEND)
         if self.image is not None:
             try:
                 bgl.glActiveTexture(bgl.GL_TEXTURE0)
-                bgl.glBindTexture(bgl.GL_TEXTURE_2D,self.image.bindcode)
+                bgl.glBindTexture(bgl.GL_TEXTURE_2D, self.image.bindcode)
 
                 self.shader.bind()
                 self.shader.uniform_int("image", 0)
-                self.batch.draw(self.shader) 
+                self.batch.draw(self.shader)
                 return True
             except:
                 pass
         bgl.glDisable(bgl.GL_BLEND)
-        return False    
+        return False
 
 
 class Help_Govie_Operator(bpy.types.Operator):
@@ -112,7 +114,8 @@ class Help_Govie_Operator(bpy.types.Operator):
     bl_description = "Description that shows in blender tooltips"
     bl_options = {"REGISTER"}
 
-    image_name : bpy.props.StringProperty(name="image_name",description="Name of the Image that should be shown")
+    image_name: bpy.props.StringProperty(
+        name="image_name", description="Name of the Image that should be shown")
     help_draw = None
 
     @classmethod
@@ -123,41 +126,43 @@ class Help_Govie_Operator(bpy.types.Operator):
         help_clicked = bpy.context.scene.help_govie_tools
         self.help_draw = self.__class__.help_draw
 
-        if self.help_draw is None:    
+        if self.help_draw is None:
             self.help_draw = Help_Draw(context)
             self.__class__.help_draw = self.help_draw
 
-        if help_clicked:    
+        if help_clicked:
             self.help_draw.set_image(self.image_name)
             self.help_draw.add_handle()
-            self.draw_image(50,30)
+            self.draw_image(50, 30)
         else:
             self.help_draw.remove_handle()
-            return{"FINISHED"}
-    
+            return {"FINISHED"}
+
         context.window_manager.modal_handler_add(self)
         return {"RUNNING_MODAL"}
 
     def modal(self, context, event):
-        
+
         help_clicked = bpy.context.scene.help_govie_tools
         if event.type == 'MOUSEMOVE':
             try:
                 context.area.tag_redraw()
-                self.draw_image(50,30)
+                self.draw_image(50, 30)
             except:
                 pass
 
-        if not help_clicked :
-            return{'FINISHED'}
+        if not help_clicked:
+            return {'FINISHED'}
 
         return {'PASS_THROUGH'}
 
-    def draw_image(self,margin_top, margin_buttom):
+    def draw_image(self, margin_top, margin_buttom):
         # positioning
         try:
-            view = [area for area in bpy.context.screen.areas if area.type == 'VIEW_3D'][0]
-            region = [region for region in bpy.context.area.regions if region.type =="UI"][0]
+            view = [
+                area for area in bpy.context.screen.areas if area.type == 'VIEW_3D'][0]
+            region = [
+                region for region in bpy.context.area.regions if region.type == "UI"][0]
 
             image = self.help_draw.get_image()
             if image is not None:
@@ -176,9 +181,7 @@ class Help_Govie_Operator(bpy.types.Operator):
                     x1 = 0
                     y1 -= diff
 
-                self.help_draw.update(x1,y1,x2,y2)
+                self.help_draw.update(x1, y1, x2, y2)
 
         except:
-             pass
-
-
+            pass
