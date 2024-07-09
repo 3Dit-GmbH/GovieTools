@@ -119,3 +119,15 @@ def run_help_operator(self, context):
 
 bpy.types.Scene.help_govie_tools = BoolProperty(
     default=False, update=run_help_operator)
+
+
+def register():
+    bpy.utils.register_class(Export_Settings)
+    bpy.utils.register_class(ParticleSettings)
+    bpy.utils.register_class(AnimationSettings)
+
+
+def unregister():
+    bpy.utils.unregister_class(Export_Settings)
+    bpy.utils.unregister_class(ParticleSettings)
+    bpy.utils.unregister_class(AnimationSettings)

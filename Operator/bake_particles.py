@@ -120,3 +120,11 @@ class BakeParticlesOperator(bpy.types.Operator):
             obj.select_set(True)
 
         return {'FINISHED'}
+
+
+def register():
+    bpy.utils.register_class(BakeParticlesOperator)
+
+
+def unregister():
+    bpy.utils.unregister_class(BakeParticlesOperator)

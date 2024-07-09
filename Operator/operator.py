@@ -425,3 +425,27 @@ class GOVIE_Add_UV_Animation_Operator(bpy.types.Operator):
         context.view_layer.objects.active = active_object
 
         return {'FINISHED'}
+
+
+def register():
+    bpy.utils.register_class(GOVIE_open_export_folder_Operator)
+    bpy.utils.register_class(GOVIE_Open_Link_Operator)
+    bpy.utils.register_class(GOVIE_Add_Property_Operator)
+    bpy.utils.register_class(GOVIE_Remove_Property_Operator)
+    bpy.utils.register_class(GOVIE_Quick_Export_GLB_Operator)
+    bpy.utils.register_class(GOVIE_Convert_Text_Operator)
+    bpy.utils.register_class(GOVIE_CleanupMesh_Operator)
+    bpy.utils.register_class(GOVIE_CheckTexNodes_Operator)
+    bpy.utils.register_class(GOVIE_Add_UV_Animation_Operator)
+
+
+def unregister():
+    bpy.utils.unregister_class(GOVIE_open_export_folder_Operator)
+    bpy.utils.unregister_class(GOVIE_Open_Link_Operator)
+    bpy.utils.unregister_class(GOVIE_Add_Property_Operator)
+    bpy.utils.unregister_class(GOVIE_Remove_Property_Operator)
+    bpy.utils.unregister_class(GOVIE_Quick_Export_GLB_Operator)
+    bpy.utils.unregister_class(GOVIE_Convert_Text_Operator)
+    bpy.utils.unregister_class(GOVIE_CleanupMesh_Operator)
+    bpy.utils.unregister_class(GOVIE_CheckTexNodes_Operator)
+    bpy.utils.unregister_class(GOVIE_Add_UV_Animation_Operator)

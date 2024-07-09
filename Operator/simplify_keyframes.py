@@ -30,3 +30,11 @@ class SimplifyKeyframes(bpy.types.Operator):
         context.area.type = 'VIEW_3D'
 
         return {"FINISHED"}
+
+
+def register():
+    bpy.utils.register_class(SimplifyKeyframes)
+
+
+def unregister():
+    bpy.utils.unregister_class(SimplifyKeyframes)

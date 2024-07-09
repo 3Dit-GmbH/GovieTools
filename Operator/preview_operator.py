@@ -34,3 +34,11 @@ class GOVIE_Preview_Operator(bpy.types.Operator):
         # run browser
         bpy.ops.wm.url_open(url=self.url)
         return {"FINISHED"}
+
+
+def register():
+    bpy.utils.register_class(GOVIE_Preview_Operator)
+
+
+def unregister():
+    bpy.utils.unregister_class(GOVIE_Preview_Operator)

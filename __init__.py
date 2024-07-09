@@ -14,7 +14,11 @@
 
 import os
 from .Functions import functions
-from . import auto_load
+from .Keycodes import key_codes
+from .Operator import bake_particles, join_animation, preview_operator, simplify_keyframes, operator
+from .Panel import panel
+from .Properties import properties
+
 bl_info = {
     "name": "Govie Tools",
     "author": "Lorenz Wieseke, 3D Interaction Technologies GmbH (contact@govie.de)",
@@ -28,15 +32,12 @@ bl_info = {
     "tracker_url": "https://github.com/3Dit-GmbH/GovieTools/issues",
 }
 
-
-auto_load.init()
+# auto_load.init()
 
 
 def register():
-    auto_load.register()
     functions.get_addon_dir(os.path.realpath(__file__))
 
 
 def unregister():
-    auto_load.unregister()
     functions.stop_server()

@@ -1,0 +1,26 @@
+schema_version = "1.0.0"
+
+id = "govietools"
+version = "1.0.7"
+name = "Govie Tools"
+tagline = "Optimize your model for use in the Govie Editor"
+maintainer = "Lorenz Wieseke, 3D Interaction Technologies GmbH <contact@govie.de>"
+type = "add-on"
+
+website = "https://govie-editor.de/help/govie-tools/"
+
+tags = ["Scene", "Import-Export"]
+
+blender_version_min = "4.2.0"
+
+license = [
+  "SPDX:MIT"
+]
+
+copyright = [
+  "2024 Lorenz Wieseke via 3D Interaction Technologies GmbH"
+]
+
+[permissions]
+network = "Need to open a website for GLB preview"
+files = "Export GLB to disk"

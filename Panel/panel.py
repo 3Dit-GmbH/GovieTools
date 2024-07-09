@@ -512,3 +512,29 @@ class HelpPanel(bpy.types.Panel):
                             icon='WORLD').url = "https://govie-editor.de"
             layout.operator("scene.open_link", text="Add-on Documentation",
                             icon='HELP').url = "https://govie-editor.de"
+
+
+def register():
+    bpy.utils.register_class(ANNO_UL_List)
+    bpy.utils.register_class(ANIM_UL_List)
+    bpy.utils.register_class(VIS_UL_List)
+    bpy.utils.register_class(CLICK_UL_List)
+    bpy.utils.register_class(AnnotationPanel)
+    bpy.utils.register_class(AnimationPanel)
+    bpy.utils.register_class(VisibilityPropertyPanel)
+    bpy.utils.register_class(ClickableObjectPropertyPanel)
+    bpy.utils.register_class(GLBExportPanel)
+    bpy.utils.register_class(HelpPanel)
+
+
+def unregister():
+    bpy.utils.unregister_class(ANNO_UL_List)
+    bpy.utils.unregister_class(ANIM_UL_List)
+    bpy.utils.unregister_class(VIS_UL_List)
+    bpy.utils.unregister_class(CLICK_UL_List)
+    bpy.utils.unregister_class(AnnotationPanel)
+    bpy.utils.unregister_class(AnimationPanel)
+    bpy.utils.unregister_class(VisibilityPropertyPanel)
+    bpy.utils.unregister_class(ClickableObjectPropertyPanel)
+    bpy.utils.unregister_class(GLBExportPanel)
+    bpy.utils.unregister_class(HelpPanel)

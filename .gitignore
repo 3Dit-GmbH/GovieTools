@@ -2,5 +2,7 @@
 .idea/
 __pycache__/
 process_list.json
+*.zip
+sync.ffs_db
 
 debug.log

@@ -185,3 +185,11 @@ class Help_Govie_Operator(bpy.types.Operator):
 
         except:
             pass
+
+
+def register():
+    bpy.utils.register_class(Help_Govie_Operator)
+
+
+def unregister():
+    bpy.utils.unregister_class(Help_Govie_Operator)

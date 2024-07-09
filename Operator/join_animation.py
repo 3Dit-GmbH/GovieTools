@@ -80,3 +80,15 @@ class RenameNLAAnimationOperator(bpy.types.Operator):
             track.name = self.anim_name
 
         return {"FINISHED"}
+
+
+def register():
+    bpy.utils.register_class(JoinAnimationOperator)
+    bpy.utils.register_class(SeperateAnimationOperator)
+    bpy.utils.register_class(RenameNLAAnimationOperator)
+
+
+def unregister():
+    bpy.utils.unregister_class(JoinAnimationOperator)
+    bpy.utils.unregister_class(SeperateAnimationOperator)
+    bpy.utils.unregister_class(RenameNLAAnimationOperator)
