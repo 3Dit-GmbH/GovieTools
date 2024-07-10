@@ -14,6 +14,7 @@
 
 import os
 from .Functions import functions
+from .Help import help_overlay
 from .Keycodes import key_codes
 from .Operator import bake_particles, join_animation, preview_operator, simplify_keyframes, operator
 from .Panel import panel
@@ -24,7 +25,7 @@ bl_info = {
     "author": "Lorenz Wieseke, 3D Interaction Technologies GmbH (contact@govie.de)",
     "description": "Transform your model into a web-optimized GLB file for use in the Govie Editor.",
     "blender": (4, 0, 0),
-    "version": (1, 0, 8),
+    "version": (1, 0, 9),
     "location": "View 3D > Property Panel (N-Key in 3D View)",
     "warning": "",
     "category": "Scene",
@@ -32,12 +33,26 @@ bl_info = {
     "tracker_url": "https://github.com/3Dit-GmbH/GovieTools/issues",
 }
 
-# auto_load.init()
-
 
 def register():
+    help_overlay.register()
+    key_codes.register()
+    bake_particles.register()
+    join_animation.register()
+    preview_operator.register()
+    simplify_keyframes.register()
+    operator.register()
+    panel.register()
     functions.get_addon_dir(os.path.realpath(__file__))
 
 
 def unregister():
+    help_overlay.unregister()
+    key_codes.unregister()
+    bake_particles.unregister()
+    join_animation.unregister()
+    preview_operator.unregister()
+    simplify_keyframes.unregister()
+    operator.unregister()
+    panel.unregister()
     functions.stop_server()
