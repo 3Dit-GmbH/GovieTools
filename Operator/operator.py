@@ -35,12 +35,15 @@ class GOVIE_open_export_folder_Operator(bpy.types.Operator):
 class GOVIE_Open_Link_Operator(bpy.types.Operator):
     bl_idname = "scene.open_link"
     bl_label = "Open Website"
-    bl_description = "Go to GOVIE Website"
+    bl_description = "Go to GOVIE Website (only works if online access is allowed)"
 
     url: bpy.props.StringProperty(name="url")
 
     @classmethod
     def poll(cls, context):
+        if hasattr(bpy.app, 'online_access'):
+            return bpy.app.online_access
+
         return True
 
     def execute(self, context):
