@@ -9,8 +9,8 @@ def update_sel_item(self, value):
 
 
 def remap_vis_prop(self, value):
-    for obj in bpy.data.objects:
-        if obj.get('visibility') is not None:
+    for obj in bpy.context.scene.objects:
+        if obj.get("visibility") is not None:
             obj["visibility"] = int(obj.visibiliy_bool)
 
 

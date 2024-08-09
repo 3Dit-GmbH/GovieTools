@@ -4,5 +4,7 @@ __pycache__/
 process_list.json
 *.zip
 sync.ffs_db
-
+.venv
+.nova
+.DS_Store
 debug.log

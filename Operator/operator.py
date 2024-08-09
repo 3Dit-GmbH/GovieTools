@@ -231,7 +231,7 @@ class GOVIE_Convert_Text_Operator(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        for obj in bpy.data.objects:
+        for obj in context.scene.objects:
             if obj.type == 'FONT' and obj.visible_get():
                 return context
 
@@ -250,7 +250,7 @@ class GOVIE_Convert_Text_Operator(bpy.types.Operator):
         if newCol.name not in context.scene.collection.children:
             context.scene.collection.children.link(newCol)
 
-        for obj in bpy.data.objects:
+        for obj in context.scene.objects:
             if obj.type == 'FONT':
 
                 # create new object for mesh
@@ -302,7 +302,7 @@ class GOVIE_CleanupMesh_Operator(bpy.types.Operator):
             exclude_temp_list.append(collection.exclude)
             collection.exclude = False
 
-        for obj in bpy.data.objects:
+        for obj in context.scene.objects:
             if obj.type == 'MESH':
 
                 functions.select_object(self, obj)

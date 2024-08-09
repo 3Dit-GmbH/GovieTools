@@ -3,12 +3,10 @@ import subprocess
 import json
 import os
 import signal
-
 import sys
 from pathlib import Path
 
 
-O = bpy.ops
 addon_dir = ""
 
 
@@ -18,25 +16,20 @@ def get_addon_dir(file):
 
 
 def select_object(self, obj):
-    C = bpy.context
-    O = bpy.ops
     try:
-        O.object.select_all(action='DESELECT')
-        C.view_layer.objects.active = obj
+        bpy.ops.object.select_all(action="DESELECT")
+        bpy.context.view_layer.objects.active = obj
         obj.select_set(True)
-    except:
-        self.report({'INFO'}, "Object {} not in View Layer".format(obj.name))
+    except RuntimeError:
+        self.report({"INFO"}, "Object {} not in View Layer".format(obj.name))
 
 
 def select_object_by_mat(self, mat):
-    obj_found = None
-    D = bpy.data
-    for obj in D.objects:
+    for obj in bpy.context.scene.objects:
         if obj.type != "MESH":
             continue
         object_materials = [slot.material for slot in obj.material_slots]
         if mat in object_materials:
-            obj_found = obj
             select_object(self, obj)
 
 
@@ -46,7 +39,6 @@ def get_config_file():
 
 
 def start_server(glb_file_path, port):
-
     process_list_path = get_config_file()
 
     # read pid from file
@@ -61,16 +53,16 @@ def start_server(glb_file_path, port):
     server_file_path = os.path.join(addon_dir, "Server", "server.py")
 
     server_process = subprocess.Popen(
-        [python_path, server_file_path, glb_file_path, str(port)])
+        [python_path, server_file_path, glb_file_path, str(port)]
+    )
     pid_list.append(server_process.pid)
 
     # write pid to file
-    with open(process_list_path, 'w') as f:
+    with open(process_list_path, "w") as f:
         json.dump(pid_list, f)
 
 
 def stop_server():
-
     process_list_path = get_config_file()
 
     # read pid from file
@@ -86,21 +78,20 @@ def stop_server():
             continue
 
     # write pid to file
-    with open(process_list_path, 'w') as f:
+    with open(process_list_path, "w") as f:
         json.dump(pid_list, f)
 
     return pid_list
 
 
 def convert_umlaut(str):
-    spcial_char_map = {ord('ä'): 'ae', ord('ü'): 'ue',
-                       ord('ö'): 'oe', ord('ß'): 'ss'}
+    spcial_char_map = {ord("ä"): "ae", ord("ü"): "ue", ord("ö"): "oe", ord("ß"): "ss"}
     return str.translate(spcial_char_map)
 
 
 def rename_annotation():
-    for o in bpy.data.objects:
-        if o.name.startswith('Under'):
+    for o in bpy.context.scene.objects:
+        if o.name.startswith("Under"):
             o.data.name = o.name
 
 
@@ -140,17 +131,17 @@ def join_objects_without_visibility_property(export_selected):
             bpy.data.objects.remove(o)
 
     # Select only objects that can be joined
-    bpy.ops.object.select_all(action='SELECT')
+    bpy.ops.object.select_all(action="SELECT")
 
     for o in current_scene.objects:
-        if 'visibility' in o.keys():
+        if "visibility" in o.keys():
             o.select_set(False)
             # also deselect all children
             for child in o.children_recursive:
                 child.select_set(False)
             continue
 
-        if 'clickablePart' in o.keys():
+        if "clickablePart" in o.keys():
             o.select_set(False)
             # also deselect all children
             for child in o.children_recursive:
@@ -161,7 +152,7 @@ def join_objects_without_visibility_property(export_selected):
             o.select_set(False)
             continue
 
-        if o.type != 'MESH':
+        if o.type != "MESH":
             o.select_set(False)
             continue
 
@@ -186,9 +177,8 @@ def join_objects_without_visibility_property(export_selected):
 def optimize_scene(gltf_export_param):
     bpy.ops.wm.save_mainfile()
     # Work on a copy of the scene
-    bpy.ops.scene.new(type='FULL_COPY')
-    join_objects_without_visibility_property(
-        gltf_export_param['use_selection'])
+    bpy.ops.scene.new(type="FULL_COPY")
+    join_objects_without_visibility_property(gltf_export_param["use_selection"])
     bpy.ops.export_scene.gltf(**gltf_export_param)
     bpy.ops.scene.delete()
     bpy.ops.wm.open_mainfile(filepath=bpy.data.filepath)
