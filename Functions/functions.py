@@ -1,11 +1,11 @@
-import bpy
-import subprocess
 import json
 import os
 import signal
+import subprocess
 import sys
 from pathlib import Path
 
+import bpy
 
 addon_dir = ""
 

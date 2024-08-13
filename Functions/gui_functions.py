@@ -1,5 +1,6 @@
-from . import functions
 import bpy
+
+from . import functions
 
 
 def update_sel_item(self, value):
@@ -11,7 +12,7 @@ def update_sel_item(self, value):
 def remap_vis_prop(self, value):
     for obj in bpy.context.scene.objects:
         if obj.get("visibility") is not None:
-            obj["visibility"] = int(obj.visibiliy_bool)
+            obj["visibility"] = int(obj.visibility_bool)
 
 
 def headline(layout, *valueList):
