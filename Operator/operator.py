@@ -65,7 +65,7 @@ class GOVIE_Add_Property_Operator(bpy.types.Operator):
         for obj in selected_objects:
             if self.property_type == "visibility":
                 obj["visibility"] = 1
-                obj.visibility_bool = 1
+                # obj.visibility_bool = 1
             if self.property_type == "clickable":
                 obj["clickablePart"] = "clickablePart"
 

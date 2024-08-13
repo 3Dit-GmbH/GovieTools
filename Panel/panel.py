@@ -1,6 +1,7 @@
 import bpy
 
 from ..Functions import gui_functions
+from ..Properties import properties
 
 
 class ANIM_UL_List(bpy.types.UIList):
@@ -204,6 +205,7 @@ class ANIM_PT_Main(GovieToolsPanel, bpy.types.Panel):
         gui_functions.headline(
             layout, (0.2, "ACTIVE"), (0.4, "OBJECT NAME"), (1, "ANIMATION NAME")
         )
+
         layout.template_list(
             "ANIM_UL_List", "", scene, "objects", scene, "object_index"
         )
@@ -339,14 +341,13 @@ class GOVIE_PT_Export_Sub_Verify(GovieToolsPanel, bpy.types.Panel):
         layout = self.layout
         mat_name_list = context.scene.mat_name_list
 
-        box = layout.box()
         if len(mat_name_list) > 0:
-            box.label(text="Check Materials:")
+            layout.label(text="Check Materials:")
             for mat_name in mat_name_list:
-                box.label(text=mat_name)
+                layout.label(text=mat_name)
 
-        box.operator("object.check_tex_nodes", text="Find Empty Image Nodes")
-        box.operator("object.cleanup_mesh", text="Cleanup Mesh")
+        layout.operator("object.check_tex_nodes", text="Find Empty Image Nodes")
+        layout.operator("object.cleanup_mesh", text="Cleanup Mesh")
 
 
 class GOVIE_PT_Export_Sub_Settings(GovieToolsPanel, bpy.types.Panel):
@@ -361,7 +362,6 @@ class GOVIE_PT_Export_Sub_Settings(GovieToolsPanel, bpy.types.Panel):
         layout.label(text="Scene")
         col = layout.column(align=True)
         row = col.row(align=True)
-        row.separator(factor=1)
         row.prop(
             exp_settings,
             "export_selected",
@@ -369,6 +369,7 @@ class GOVIE_PT_Export_Sub_Settings(GovieToolsPanel, bpy.types.Panel):
             toggle=True,
             icon="RESTRICT_SELECT_OFF",
         )
+        row = col.row(align=True)
         row.prop(
             exp_settings,
             "export_lights",
@@ -376,6 +377,7 @@ class GOVIE_PT_Export_Sub_Settings(GovieToolsPanel, bpy.types.Panel):
             toggle=True,
             icon="LIGHT",
         )
+        row = col.row(align=True)
         row.prop(
             exp_settings,
             "export_animations",
@@ -383,6 +385,7 @@ class GOVIE_PT_Export_Sub_Settings(GovieToolsPanel, bpy.types.Panel):
             toggle=True,
             icon="RENDER_ANIMATION",
         )
+        row = col.row(align=True)
         row.prop(
             exp_settings,
             "apply_modifiers",
@@ -390,12 +393,10 @@ class GOVIE_PT_Export_Sub_Settings(GovieToolsPanel, bpy.types.Panel):
             toggle=True,
             icon="MODIFIER",
         )
-        row.separator(factor=1)
 
         layout.label(text="Animation")
         col = layout.column(align=True)
         row = col.row(align=True)
-        row.separator(factor=1)
         row.prop(
             exp_settings,
             "use_sampling",
@@ -403,12 +404,11 @@ class GOVIE_PT_Export_Sub_Settings(GovieToolsPanel, bpy.types.Panel):
             toggle=True,
             icon="OUTLINER_OB_CAMERA",
         )
+        row = col.row(align=True)
         row.prop(
             exp_settings, "group_by_nla", text="Group by NLA", toggle=True, icon="NLA"
         )
-        row.separator(factor=1)
         row = col.row(align=True)
-        row.separator(factor=1)
         row.prop(
             exp_settings,
             "export_all_influences",
@@ -416,6 +416,7 @@ class GOVIE_PT_Export_Sub_Settings(GovieToolsPanel, bpy.types.Panel):
             toggle=True,
             icon="BONE_DATA",
         )
+        row = col.row(align=True)
         row.prop(
             exp_settings,
             "optimize_animation",
@@ -423,37 +424,28 @@ class GOVIE_PT_Export_Sub_Settings(GovieToolsPanel, bpy.types.Panel):
             toggle=True,
             icon="KEYFRAME_HLT",
         )
-        row.separator(factor=1)
 
         layout.label(text="Compression")
         col = layout.column()
         row = col.row(align=True)
-        row.separator(factor=1)
         row.prop(exp_settings, "export_image_format", text="Format")
-        row.separator(factor=1)
-        row = col.row()
-        row.separator(factor=1)
+        row = col.row(align=True)
         row.prop(exp_settings, "use_draco", text="Use Draco", toggle=True)
-        row.separator(factor=1)
         row = col.row(align=True)
-        row.separator(factor=1)
         row.prop(exp_settings, "draco_compression_level", text="Compression Level")
-        row.prop(exp_settings, "postion_quantization", text="Position Quantisation")
-        row.separator(factor=1)
-
         row = col.row(align=True)
-        row.separator(factor=1)
+        row.prop(exp_settings, "postion_quantization", text="Position Quantisation")
+        row = col.row(align=True)
         row.prop(exp_settings, "normal_quantization", text="Normal Quantisation")
+        row = col.row(align=True)
         row.prop(
             exp_settings, "texcoord_quantization", text="Texture Coord. Quantisation"
         )
-        row.separator(factor=1)
 
         layout.label(text="Optimization")
         # Optimization Settings
         col = layout.column(align=True)
         row = col.row(align=True)
-        row.separator(factor=1)
         row.prop(
             exp_settings,
             "join_objects",
@@ -461,7 +453,6 @@ class GOVIE_PT_Export_Sub_Settings(GovieToolsPanel, bpy.types.Panel):
             toggle=True,
             icon="SNAP_VERTEX",
         )
-        row.separator(factor=1)
 
 
 class GOVIE_PT_EXPORT_Sub_Export(GovieToolsPanel, bpy.types.Panel):
