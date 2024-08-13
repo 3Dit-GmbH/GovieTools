@@ -15,22 +15,19 @@ from ..Functions import gui_functions
 
 
 class Export_Settings(bpy.types.PropertyGroup):
-    open_export_settings_menu: BoolProperty(default=False)
-    open_scene_settings_menu: BoolProperty(default=False)
-    open_animation_settings_menu: BoolProperty(default=False)
-    open_compression_settings_menu: BoolProperty(default=False)
-    open_optimization_settings_menu: BoolProperty(default=False)
     glb_filename: StringProperty(name="Filename", default="filename")
-    export_selected: BoolProperty(default=False)
-    join_objects: BoolProperty(default=False)
-    export_lights: BoolProperty(default=False)
-    export_animations: BoolProperty(default=True)
-    apply_modifiers: BoolProperty(default=False)
-    export_colors: BoolProperty(default=True)
-    use_sampling: BoolProperty(default=False)
-    optimize_animation: BoolProperty(default=False)
-    group_by_nla: BoolProperty(default=True)
-    export_all_influences: BoolProperty(default=False)
+    export_selected: BoolProperty(name="Export Only Selected", default=False)
+    join_objects: BoolProperty(name="Join Static Objects", default=False)
+    export_lights: BoolProperty(name="Export Lights", default=False)
+    export_animations: BoolProperty(name="Export Animation", default=True)
+    apply_modifiers: BoolProperty(name="Apply Modifiers", default=True)
+    export_colors: BoolProperty(name="Export Vertex Colors", default=True)
+    use_sampling: BoolProperty(name="Resample Animation", default=False)
+    optimize_animation: BoolProperty(name="Optimize Animation", default=False)
+    group_by_nla: BoolProperty(name="Group by NLA", default=True)
+    export_all_influences: BoolProperty(
+        name="Include all Bone Influences", default=False
+    )
     export_image_format: EnumProperty(
         name="Image Compression",
         items=(
@@ -42,11 +39,17 @@ class Export_Settings(bpy.types.PropertyGroup):
             ("JPEG", "JPEG", "Convert Images to JPEG, images with alpha still use PNG"),
         ),
     )
-    use_draco: BoolProperty(default=True)
-    draco_compression_level: IntProperty(default=6)
-    postion_quantization: IntProperty(default=14, min=0, max=30)
-    normal_quantization: IntProperty(default=10, min=0, max=30)
-    texcoord_quantization: IntProperty(default=12, min=0, max=30)
+    use_draco: BoolProperty(name="Draco Compression", default=True)
+    draco_compression_level: IntProperty(name="Compression Level", default=6)
+    postion_quantization: IntProperty(
+        name="Position Quantisation", default=14, min=0, max=30
+    )
+    normal_quantization: IntProperty(
+        name="Normal Quantisation", default=10, min=0, max=30
+    )
+    texcoord_quantization: IntProperty(
+        name="Tex-Coord. Quantisation", default=12, min=0, max=30
+    )
 
 
 bpy.utils.register_class(Export_Settings)
@@ -82,12 +85,12 @@ class AnimationSettings(bpy.types.PropertyGroup):
     simplify_keyframes_modes = [
         (
             "RATIO",
-            "RATIO",
+            "Ratio",
             "Use a percentage to specify how many keyframes you want to remove.",
         ),
         (
             "ERROR",
-            "ERROR ",
+            "Error ",
             "Use an error margin to specify how much the curve is allowed to deviate from the original path.",
         ),
     ]

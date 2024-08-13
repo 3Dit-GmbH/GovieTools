@@ -237,14 +237,18 @@ class ANIM_PT_Sub_Particles(GovieToolsPanel, bpy.types.Panel):
     def draw(self, context):
         particle_settings = context.scene.particle_settings
         layout = self.layout
+        layout.use_property_split = True
+        layout.use_property_decorate = False
         # particle settings
-        layout.prop(particle_settings, "key_loc", text="Key Location")
-        layout.prop(particle_settings, "key_rot", text="Key Rotation")
+        column = layout.column(align=True, heading="Key")
+        column.prop(particle_settings, "key_loc", text="Location")
+        column.prop(particle_settings, "key_rot", text="Rotation")
 
-        layout.prop(particle_settings, "key_scale", text="Key Scale")
-        layout.prop(particle_settings, "key_vis", text="Key Visibility")
+        column.prop(particle_settings, "key_scale", text="Scale")
+        column.prop(particle_settings, "key_vis", text="Visibility")
+        layout.separator()
         layout.prop(particle_settings, "frame_offset", text="Frame Offset")
-        layout.prop(particle_settings, "collection_name", text="")
+        layout.prop(particle_settings, "collection_name")
 
         # Bake Operator
         bake_particle_op = layout.operator(
@@ -264,8 +268,11 @@ class ANIM_PT_Sub_Simplify(GovieToolsPanel, bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         anim_settings = context.scene.animation_settings
-        layout.prop(anim_settings, "simplify_keyframes_enum", text="")
-        layout.prop(anim_settings, "decimate_ratio", text="")
+        layout.prop(anim_settings, "simplify_keyframes_enum", text="Mode")
+        if anim_settings.simplify_keyframes_enum == "RATIO":
+            layout.prop(anim_settings, "decimate_ratio", text="Ratio")
+        else:
+            layout.prop(anim_settings, "decimate_ratio", text="Error Margin")
         simplify_keyframe_op = layout.operator(
             "scene.simplify_keyframes", text="Simplify Keyframes"
         )
@@ -334,7 +341,7 @@ class GOVIE_PT_Export_Main(GovieToolsPanel, bpy.types.Panel):
 
 class GOVIE_PT_Export_Sub_Verify(GovieToolsPanel, bpy.types.Panel):
     bl_parent_id = "GOVIE_PT_Export_Main"
-    bl_label = "Verification"
+    bl_label = "Cleanup"
     bl_options = {"DEFAULT_CLOSED"}
 
     def draw(self, context):
@@ -352,106 +359,64 @@ class GOVIE_PT_Export_Sub_Verify(GovieToolsPanel, bpy.types.Panel):
 
 class GOVIE_PT_Export_Sub_Settings(GovieToolsPanel, bpy.types.Panel):
     bl_parent_id = "GOVIE_PT_Export_Main"
+    bl_idname = "GOVIE_PT_Export_Sub_Settings"
     bl_label = "Export Settings"
     bl_options = {"DEFAULT_CLOSED"}
 
     def draw(self, context):
         layout = self.layout
+        # align properties to the right
+        layout.use_property_split = True
+        # hide keyframing icon
+        layout.use_property_decorate = False
         exp_settings = context.scene.export_settings
 
-        layout.label(text="Scene")
-        col = layout.column(align=True)
-        row = col.row(align=True)
-        row.prop(
-            exp_settings,
-            "export_selected",
-            text="Selected Only",
-            toggle=True,
-            icon="RESTRICT_SELECT_OFF",
-        )
-        row = col.row(align=True)
-        row.prop(
+        column = layout.column(align=True, heading="Export")
+        column.prop(exp_settings, "export_selected", text="Only Selected")
+        column.prop(
             exp_settings,
             "export_lights",
-            text="Include Lights",
-            toggle=True,
-            icon="LIGHT",
+            text="Lights",
         )
-        row = col.row(align=True)
-        row.prop(
-            exp_settings,
-            "export_animations",
-            text="Include Animation",
-            toggle=True,
-            icon="RENDER_ANIMATION",
-        )
-        row = col.row(align=True)
-        row.prop(
+        column.prop(exp_settings, "export_animations", text="Animations")
+        column.prop(
             exp_settings,
             "apply_modifiers",
-            text="Apply Modifiers",
-            toggle=True,
-            icon="MODIFIER",
         )
 
-        layout.label(text="Animation")
-        col = layout.column(align=True)
-        row = col.row(align=True)
-        row.prop(
+        # layout.separator()
+        column = layout.column(align=True, heading="Animation")
+        column.prop(
             exp_settings,
             "use_sampling",
-            text="Use Sampling",
-            toggle=True,
-            icon="OUTLINER_OB_CAMERA",
         )
-        row = col.row(align=True)
-        row.prop(
-            exp_settings, "group_by_nla", text="Group by NLA", toggle=True, icon="NLA"
+        column.prop(
+            exp_settings,
+            "group_by_nla",
         )
-        row = col.row(align=True)
-        row.prop(
+        column.prop(
             exp_settings,
             "export_all_influences",
-            text="Include all Bone Influences",
-            toggle=True,
-            icon="BONE_DATA",
         )
-        row = col.row(align=True)
-        row.prop(
+        column.prop(
             exp_settings,
             "optimize_animation",
-            text="Optimize Animation",
-            toggle=True,
-            icon="KEYFRAME_HLT",
         )
 
-        layout.label(text="Compression")
-        col = layout.column()
-        row = col.row(align=True)
-        row.prop(exp_settings, "export_image_format", text="Format")
-        row = col.row(align=True)
-        row.prop(exp_settings, "use_draco", text="Use Draco", toggle=True)
-        row = col.row(align=True)
-        row.prop(exp_settings, "draco_compression_level", text="Compression Level")
-        row = col.row(align=True)
-        row.prop(exp_settings, "postion_quantization", text="Position Quantisation")
-        row = col.row(align=True)
-        row.prop(exp_settings, "normal_quantization", text="Normal Quantisation")
-        row = col.row(align=True)
-        row.prop(
-            exp_settings, "texcoord_quantization", text="Texture Coord. Quantisation"
-        )
+        # layout.separator()
+        column = layout.column(align=True, heading="Compression")
+        column.prop(exp_settings, "export_image_format")
+        column.prop(exp_settings, "use_draco")
+        column.prop(exp_settings, "draco_compression_level")
+        column.prop(exp_settings, "postion_quantization")
+        column.prop(exp_settings, "normal_quantization")
+        column.prop(exp_settings, "texcoord_quantization")
 
-        layout.label(text="Optimization")
-        # Optimization Settings
-        col = layout.column(align=True)
-        row = col.row(align=True)
-        row.prop(
+        # layout.separator()
+        column = layout.column(align=True, heading="Optimization")
+        column.prop(
             exp_settings,
             "join_objects",
-            text="Join static objects",
-            toggle=True,
-            icon="SNAP_VERTEX",
         )
 
 
