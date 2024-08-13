@@ -13,9 +13,6 @@ class GOVIE_Preview_Operator(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        if hasattr(bpy.app, 'online_access'):
-            return bpy.app.online_access
-
         file_path = bpy.data.filepath
         project_dir = os.path.dirname(file_path)
         filename = context.scene.export_settings.glb_filename
