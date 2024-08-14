@@ -225,7 +225,7 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
 class GOVIE_CleanupMesh_Operator(bpy.types.Operator):
     bl_idname = "object.cleanup_mesh"
     bl_label = "Delete Loose and Degenerate Dissolve"
-    bl_description = "mesh cleanup -> Delete Loose and Degenerate Dissolve"
+    bl_description = "Mesh Cleanup -> Delete Loose and Degenerate Dissolve"
 
     @classmethod
     def poll(cls, context):

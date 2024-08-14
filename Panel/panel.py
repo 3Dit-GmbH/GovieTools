@@ -299,6 +299,8 @@ class VIS_PT_Main(GovieToolsPanel, bpy.types.Panel):
         layout = self.layout
         scene = context.scene
 
+        layout.label(text="Make objects hideable in the govie editor")
+
         gui_functions.headline(
             layout, (0.2, "ACTIVE"), (0.6, "OBJECT NAME"), (1, "VISIBLE")
         )
@@ -318,6 +320,8 @@ class CLICK_PT_Main(GovieToolsPanel, bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
+
+        layout.label(text="Make objects clickable in the govie editor")
 
         gui_functions.headline(layout, (0.2, "ACTIVE"), (0.8, "OBJECT NAME"))
 
@@ -405,12 +409,13 @@ class GOVIE_PT_Export_Sub_Settings(GovieToolsPanel, bpy.types.Panel):
 
         # layout.separator()
         column = layout.column(align=True, heading="Compression")
-        column.prop(exp_settings, "export_image_format")
+
         column.prop(exp_settings, "use_draco")
         column.prop(exp_settings, "draco_compression_level")
         column.prop(exp_settings, "postion_quantization")
         column.prop(exp_settings, "normal_quantization")
         column.prop(exp_settings, "texcoord_quantization")
+        column.prop(exp_settings, "export_image_format")
 
         # layout.separator()
         column = layout.column(align=True, heading="Optimization")
@@ -455,7 +460,7 @@ class HelpPanel(GovieToolsPanel, bpy.types.Panel):
             ).url = "https://govie-editor.de/en/help/govie-tools/"
 
         if lang == "de_DE":
-            layout.label(text="Um das volle Potential dieses Add-ons zu nutzen, ")
+            layout.label(text="Um das volle Potential dieses Add-ons zu nutzen,")
             layout.label(
                 text="empfehlen wir einen kostenlosen Account des Govie Editors anzulegen"
             )
@@ -479,6 +484,7 @@ def register():
     bpy.utils.register_class(GOVIE_PT_Export_Main)
     bpy.utils.register_class(GOVIE_PT_Export_Sub_Verify)
     bpy.utils.register_class(GOVIE_PT_Export_Sub_Settings)
+    bpy.utils.register_class(GOVIE_PT_EXPORT_Sub_Export)
     bpy.utils.register_class(HelpPanel)
 
 
@@ -496,4 +502,5 @@ def unregister():
     bpy.utils.unregister_class(GOVIE_PT_Export_Main)
     bpy.utils.unregister_class(GOVIE_PT_Export_Sub_Verify)
     bpy.utils.unregister_class(GOVIE_PT_Export_Sub_Settings)
+    bpy.utils.unregister_class(GOVIE_PT_EXPORT_Sub_Export)
     bpy.utils.unregister_class(HelpPanel)
