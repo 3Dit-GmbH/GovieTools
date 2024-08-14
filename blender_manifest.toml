@@ -22,5 +22,4 @@ copyright = [
 ]
 
 [permissions]
-network = "Need to open a website for GLB preview"
 files = "Export GLB to disk"
