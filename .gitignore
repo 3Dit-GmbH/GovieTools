@@ -1,8 +1,12 @@
 .vscode/
 .idea/
+.ruff_cache
 __pycache__/
 process_list.json
 *.zip
 sync.ffs_db
-
+.venv
+.nova
+.DS_Store
+.python-version
 debug.log

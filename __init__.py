@@ -13,19 +13,23 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import os
+
 from .Functions import functions
-from .Help import help_overlay
-from .Keycodes import key_codes
-from .Operator import bake_particles, join_animation, preview_operator, simplify_keyframes, operator
+from .Operator import (
+    bake_particles,
+    join_animation,
+    operator,
+    preview_operator,
+    simplify_keyframes,
+)
 from .Panel import panel
-from .Properties import properties
 
 bl_info = {
     "name": "Govie Tools",
     "author": "Lorenz Wieseke, 3D Interaction Technologies GmbH (contact@govie.de)",
     "description": "Transform your model into a web-optimized GLB file for use in the Govie Editor.",
-    "blender": (4, 0, 0),
-    "version": (1, 0, 10),
+    "blender": (4, 2, 0),
+    "version": (1, 0, 11),
     "location": "View 3D > Property Panel (N-Key in 3D View)",
     "warning": "",
     "category": "Scene",
@@ -35,8 +39,6 @@ bl_info = {
 
 
 def register():
-    help_overlay.register()
-    key_codes.register()
     bake_particles.register()
     join_animation.register()
     preview_operator.register()
@@ -47,8 +49,6 @@ def register():
 
 
 def unregister():
-    help_overlay.unregister()
-    key_codes.unregister()
     bake_particles.unregister()
     join_animation.unregister()
     preview_operator.unregister()

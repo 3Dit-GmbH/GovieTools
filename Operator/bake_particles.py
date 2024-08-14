@@ -3,6 +3,7 @@ import bpy
 
 class BakeParticlesOperator(bpy.types.Operator):
     """Bake all Particles to Keyframes. The baked instances are moved to a new collection with the name enterd above."""
+
     bl_idname = "object.bake_particles"
     bl_label = "Bake Particles"
 
@@ -61,11 +62,11 @@ class BakeParticlesOperator(bpy.types.Operator):
         rot = p.rotation
         size = p.size
         # Set rotation mode to quaternion to match particle rotation.
-        obj.rotation_mode = 'QUATERNION'
+        obj.rotation_mode = "QUATERNION"
         obj.rotation_quaternion = rot
 
         if self.KEYFRAME_VISIBILITY:
-            if p.alive_state != 'ALIVE':
+            if p.alive_state != "ALIVE":
                 size *= 0.01
 
         obj.location = loc
@@ -109,17 +110,16 @@ class BakeParticlesOperator(bpy.types.Operator):
             start_frame = bpy.context.scene.frame_start
             end_frame = bpy.context.scene.frame_end
             obj_list = self.create_objects_for_particles(ps, instance)
-            self.match_and_keyframe_objects(
-                ps, obj_list, start_frame, end_frame)
+            self.match_and_keyframe_objects(ps, obj_list, start_frame, end_frame)
 
         # Simplify
-        bpy.ops.object.select_all(action='DESELECT')
+        bpy.ops.object.select_all(action="DESELECT")
 
         collection_name = bpy.context.scene.particle_settings.collection_name
         for obj in bpy.data.collections[collection_name].all_objects:
             obj.select_set(True)
 
-        return {'FINISHED'}
+        return {"FINISHED"}
 
 
 def register():

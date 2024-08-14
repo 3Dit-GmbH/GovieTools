@@ -23,11 +23,14 @@ class SimplifyKeyframes(bpy.types.Operator):
         return display_button
 
     def execute(self, context):
-        context.area.type = 'GRAPH_EDITOR'
-        bpy.ops.graph.select_all(action='SELECT')
+        context.area.type = "GRAPH_EDITOR"
+        bpy.ops.graph.select_all(action="SELECT")
         bpy.ops.graph.decimate(
-            mode=self.mode, factor=self.decimate_ratio, remove_error_margin=self.decimate_ratio)
-        context.area.type = 'VIEW_3D'
+            mode=self.mode,
+            factor=self.decimate_ratio,
+            remove_error_margin=self.decimate_ratio,
+        )
+        context.area.type = "VIEW_3D"
 
         return {"FINISHED"}
 
