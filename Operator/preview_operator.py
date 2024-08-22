@@ -8,7 +8,7 @@ from ..Functions import functions
 class GOVIE_Preview_Operator(bpy.types.Operator):
     bl_idname = "scene.open_web_preview"
     bl_label = "Open in Browser"
-    bl_description = "Press export to display preview of exported file (only works if online access is allowed)"
+    bl_description = "Press export to display a preview of the exported file"
 
     port = 8000
     url = (
@@ -17,8 +17,7 @@ class GOVIE_Preview_Operator(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        file_path = bpy.data.filepath
-        project_dir = os.path.dirname(file_path)
+        project_dir = os.path.dirname(bpy.data.filepath)
         filename = context.scene.export_settings.glb_filename
         glb_path = os.path.join(project_dir, "glb", "")
         glb_file = glb_path + filename + ".glb"
@@ -28,8 +27,7 @@ class GOVIE_Preview_Operator(bpy.types.Operator):
         return False
 
     def execute(self, context):
-        file_path = bpy.data.filepath
-        project_dir = os.path.dirname(file_path)
+        project_dir = os.path.dirname(bpy.data.filepath)
         filename = context.scene.export_settings.glb_filename
         glb_dir = os.path.join(project_dir, "glb", "")
         glb_file_path = glb_dir + filename + ".glb"
