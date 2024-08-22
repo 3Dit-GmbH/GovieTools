@@ -8,6 +8,7 @@ from pathlib import Path
 import bpy
 
 addon_dir = ""
+server_pid = None
 
 
 def get_addon_dir(file):
@@ -33,55 +34,43 @@ def select_object_by_mat(self, mat):
             select_object(self, obj)
 
 
-def get_config_file():
-    process_list_path = os.path.join(addon_dir, "Server", "process_list.json")
-    return process_list_path
-
-
 def start_server(glb_file_path, port):
-    process_list_path = get_config_file()
+    global server_pid
 
-    # read pid from file
-    with open(process_list_path) as f:
-        pid_list = json.load(f)
+    if server_pid is not None:
+        stop_server()
 
-    if len(pid_list) > 0:
-        cleaned_pid_list = stop_server()
-        pid_list = cleaned_pid_list
-
-    python_path = Path(sys.executable)
     server_file_path = os.path.join(addon_dir, "Server", "server.py")
 
-    server_process = subprocess.Popen(
-        [python_path, server_file_path, glb_file_path, str(port)]
-    )
-    pid_list.append(server_process.pid)
+    sub_args = [Path(sys.executable)]
 
-    # write pid to file
-    with open(process_list_path, "w") as f:
-        json.dump(pid_list, f)
+    if hasattr(bpy.app, "python_args"):
+        for a in bpy.app.python_args:
+            sub_args.append(a)
+    else:
+        sub_args.append("-I")
+
+    sub_args.append(server_file_path)
+    sub_args.append(glb_file_path)
+    sub_args.append(str(port))
+
+    server_process = subprocess.Popen(sub_args)
+
+    server_pid = server_process.pid
 
 
 def stop_server():
-    process_list_path = get_config_file()
+    global server_pid
 
-    # read pid from file
-    with open(process_list_path) as f:
-        pid_list = json.load(f)
+    if server_pid is None:
+        print("No process id for the server. Has it been started?")
+        return
 
-    for pid in pid_list:
-        try:
-            os.kill(pid, signal.SIGTERM)
-            pid_list.remove(pid)
-            print("Closed process " + str(pid))
-        except OSError:
-            continue
-
-    # write pid to file
-    with open(process_list_path, "w") as f:
-        json.dump(pid_list, f)
-
-    return pid_list
+    try:
+        os.kill(server_pid, signal.SIGTERM)
+        print("Closed process " + str(server_pid))
+    except OSError:
+        print("Could not kill server process")
 
 
 def convert_umlaut(str):
