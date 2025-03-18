@@ -375,47 +375,8 @@ class GOVIE_PT_Export_Sub_Settings(GovieToolsPanel, bpy.types.Panel):
         layout.use_property_decorate = False
         exp_settings = context.scene.export_settings
 
-        column = layout.column(align=True, heading="Export")
-        column.prop(exp_settings, "export_selected", text="Only Selected")
-        column.prop(
-            exp_settings,
-            "export_lights",
-            text="Lights",
-        )
-        column.prop(exp_settings, "export_animations", text="Animations")
-        column.prop(
-            exp_settings,
-            "apply_modifiers",
-        )
-
-        # layout.separator()
-        column = layout.column(align=True, heading="Animation")
-        column.prop(
-            exp_settings,
-            "use_sampling",
-        )
-        column.prop(
-            exp_settings,
-            "group_by_nla",
-        )
-        column.prop(
-            exp_settings,
-            "export_all_influences",
-        )
-        column.prop(
-            exp_settings,
-            "optimize_animation",
-        )
-
-        # layout.separator()
-        column = layout.column(align=True, heading="Compression")
-
-        column.prop(exp_settings, "use_draco")
-        column.prop(exp_settings, "draco_compression_level")
-        column.prop(exp_settings, "postion_quantization")
-        column.prop(exp_settings, "normal_quantization")
-        column.prop(exp_settings, "texcoord_quantization")
-        column.prop(exp_settings, "export_image_format")
+        column = layout.column(align=True, heading="Preset")
+        column.prop(context.scene, "glb_preset_dropdown")
 
         # layout.separator()
         column = layout.column(align=True, heading="Optimization")
@@ -434,7 +395,7 @@ class GOVIE_PT_EXPORT_Sub_Export(GovieToolsPanel, bpy.types.Panel):
         scene = context.scene
 
         layout.prop(scene.export_settings, "glb_filename")
-        layout.prop(scene, "glb_file_dropdown")
+        # layout.prop(scene, "glb_file_dropdown")
         layout.operator("scene.gltf_quick_export", text="Export")
         row = layout.row()
         row.operator("scene.open_export_folder", icon="FILEBROWSER")

@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 import bpy
 
@@ -17,22 +18,27 @@ class GOVIE_Preview_Operator(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        project_dir = os.path.dirname(bpy.data.filepath)
-        filename = context.scene.export_settings.glb_filename
-        glb_path = os.path.join(project_dir, "glb", "")
-        glb_file = glb_path + filename + ".glb"
+        # get folder of blend file
+        blend_path = Path(bpy.data.filepath).parent
 
-        if os.path.exists(glb_file):
+        # get export settings
+        glb_filename = context.scene.export_settings.glb_filename
+
+        if blend_path.joinpath(glb_filename).parent.exists():
             return True
-        return False
+        else:
+            return False
 
     def execute(self, context):
-        project_dir = os.path.dirname(bpy.data.filepath)
-        filename = context.scene.export_settings.glb_filename
-        glb_dir = os.path.join(project_dir, "glb", "")
-        glb_file_path = glb_dir + filename + ".glb"
+        # get folder of blend file
+        blend_path = Path(bpy.data.filepath).parent
 
-        functions.start_server(glb_file_path, self.port)
+        # get export settings
+        glb_filename = context.scene.export_settings.glb_filename
+        if not glb_filename.endswith(".glb"):
+            glb_filename = "{}.glb".format(glb_filename)
+
+        functions.start_server(blend_path.joinpath(glb_filename).absolute(), self.port)
         # run browser
         bpy.ops.wm.url_open(url=self.url)
         return {"FINISHED"}

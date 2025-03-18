@@ -3,6 +3,7 @@ import subprocess
 
 import addon_utils
 import bpy
+from pathlib import Path
 
 from ..Functions import functions
 
@@ -10,21 +11,31 @@ from ..Functions import functions
 class GOVIE_open_export_folder_Operator(bpy.types.Operator):
     bl_idname = "scene.open_export_folder"
     bl_label = "Open Folder"
-    bl_description = "Open current GLB folder"
+    bl_description = "Open current GLB folder. You may need to export first for the folder to be created."
 
     @classmethod
     def poll(cls, context):
-        return True
+        # get folder of blend file
+        blend_path = Path(bpy.data.filepath).parent
+
+        # get export settings
+        glb_filename = context.scene.export_settings.glb_filename
+
+        if blend_path.joinpath(glb_filename).parent.exists():
+            return True
+        else:
+            return False
 
     def execute(self, context):
-        file_path = bpy.data.filepath
-        project_dir = os.path.dirname(file_path)
-        glb_path = os.path.join(project_dir, "glb", "")
+        # get folder of blend file
+        blend_path = Path(bpy.data.filepath).parent
 
-        if file_path != "":
-            subprocess.call("explorer " + glb_path, shell=True)
-        else:
-            self.report({"INFO"}, "You need to save Blend file first !")
+        # get export settings
+        glb_filename = context.scene.export_settings.glb_filename
+
+        bpy.ops.wm.url_open(
+            url=str(blend_path.joinpath(glb_filename).parent.absolute())
+        )
 
         return {"FINISHED"}
 
@@ -32,7 +43,7 @@ class GOVIE_open_export_folder_Operator(bpy.types.Operator):
 class GOVIE_Open_Link_Operator(bpy.types.Operator):
     bl_idname = "scene.open_link"
     bl_label = "Open Website"
-    bl_description = "Go to GOVIE Website (only works if online access is allowed)"
+    bl_description = "Go to GOVIE Website"
 
     url: bpy.props.StringProperty(name="url")
 
@@ -120,104 +131,57 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
         # check annotation names
         functions.rename_annotation()
 
-        # GLBTextureTools installed ?
-        if addon_utils.check("GLBTextureTools")[1]:
-            save_preview_lightmap_setting = (
-                bpy.context.scene.texture_settings.preview_lightmap
-            )
-            bpy.ops.object.preview_bake_texture(connect=False)
-            bpy.ops.object.preview_lightmap(connect=False)
-            bpy.ops.object.lightmap_to_emission(connect=True)
-
         # blender file saved
         file_is_saved = bpy.data.is_saved
 
-        # create folder
-        file_path = bpy.data.filepath
-        project_dir = os.path.dirname(file_path)
-        glb_path = os.path.join(project_dir, "glb", "")
+        if not file_is_saved:
+            self.report({"INFO"}, "You need to save the Blend file first!")
+            return {"FINISHED"}
 
-        if not os.path.exists(glb_path):
-            os.makedirs(glb_path)
+        # get folder of blend file
+        blend_path = Path(bpy.data.filepath).parent
 
-        # get export settigns
-        filename = context.scene.export_settings.glb_filename
-        filepath = glb_path + filename
-        use_draco = context.scene.export_settings.use_draco
-        export_selected = context.scene.export_settings.export_selected
-        export_lights = context.scene.export_settings.export_lights
-        export_animations = context.scene.export_settings.export_animations
-        apply_modifiers = context.scene.export_settings.apply_modifiers
-        use_sampling = context.scene.export_settings.use_sampling
-        optimize_animation = context.scene.export_settings.optimize_animation
-        group_by_nla = context.scene.export_settings.group_by_nla
-        export_image_format = context.scene.export_settings.export_image_format
-        draco_compression_level = context.scene.export_settings.draco_compression_level
-        postion_quantization = context.scene.export_settings.postion_quantization
-        normal_quantization = context.scene.export_settings.normal_quantization
-        texcoord_quantization = context.scene.export_settings.texcoord_quantization
-        export_all_influences = context.scene.export_settings.export_all_influences
-        export_colors = context.scene.export_settings.export_colors
+        # get export settings
+        glb_filename = context.scene.export_settings.glb_filename
+        glb_filepath = blend_path.joinpath(glb_filename)
+
+        if not glb_filepath.parent.exists():
+            glb_filepath.parent.mkdir(parents=True)
+
+        preset_path = "operator/export_scene.gltf/"
+        export_preset_name = context.scene.export_settings.export_preset
+        preset_filepath = bpy.utils.preset_find(export_preset_name, preset_path)
+
+        gltf_export_param = {}
+
+        # read preset parameters from file
+        if preset_filepath:
+
+            class Container(object):
+                __slots__ = ("__dict__",)
+
+            op = Container()
+            preset_file = open(preset_filepath, "r")
+
+            # storing the values from the preset on the class
+            for line in preset_file.readlines()[3::]:
+                exec(line, globals(), locals())
+
+            # pass class dictionary to the operator
+            gltf_export_param = op.__dict__
+
         join_objects = context.scene.export_settings.join_objects
 
-        # blender version
-        version = bpy.app.version
+        gltf_export_param["filepath"] = str(glb_filepath.absolute())
 
-        gltf_export_param = {
-            "filepath": filepath,
-            "export_draco_mesh_compression_enable": use_draco,
-            "export_draco_mesh_compression_level": draco_compression_level,
-            "export_draco_position_quantization": postion_quantization,
-            "export_draco_normal_quantization": normal_quantization,
-            "export_draco_texcoord_quantization": texcoord_quantization,
-            "export_extras": True,
-            "export_lights": export_lights,
-            "export_animations": export_animations,
-            "export_morph": True,
-            "export_apply": apply_modifiers,
-            "export_image_format": export_image_format,
-            "export_nla_strips": group_by_nla,
-            "export_force_sampling": use_sampling,
-            "export_all_influences": export_all_influences,
-            "use_visible": True,
-        }
-
-        if version < (3, 2, 0):
-            gltf_export_param["export_selected"] = export_selected
-
-        if version >= (3, 2, 0) and version < (3, 3, 1):
-            gltf_export_param["use_selection"] = export_selected
-            gltf_export_param["optimize_animation_size"] = optimize_animation
-
-        if version >= (3, 3, 1):
-            gltf_export_param["use_selection"] = export_selected
-            gltf_export_param["export_optimize_animation_size"] = optimize_animation
-
-        if version >= (3, 6, 0):
-            gltf_export_param["use_selection"] = export_selected
-            gltf_export_param["export_optimize_animation_size"] = optimize_animation
-            gltf_export_param["use_active_scene"] = True
-            if group_by_nla is False:
-                gltf_export_param["export_animation_mode"] = "ACTIVE_ACTIONS"
-
-        if version < (4, 2, 0):
-            gltf_export_param["export_colors"] = export_colors
-
-        if file_is_saved:
-            # export glb
-            if join_objects:
-                functions.optimize_scene(gltf_export_param)
-            else:
-                bpy.ops.export_scene.gltf(**gltf_export_param)
-            # change glb dropdown entry
-            context.scene.glb_file_dropdown = context.scene.export_settings.glb_filename
-
-            if addon_utils.check("GLBTextureTools")[1]:
-                bpy.ops.object.lightmap_to_emission(connect=False)
-                bpy.ops.object.preview_lightmap(connect=save_preview_lightmap_setting)
-
+        # export glb
+        if join_objects:
+            functions.optimize_scene(gltf_export_param)
         else:
-            self.report({"INFO"}, "You need to save the Blend file first!")
+            bpy.ops.export_scene.gltf(**gltf_export_param)
+
+        # change glb dropdown entry
+        # context.scene.glb_file_dropdown = context.scene.export_settings.glb_filename
 
         return {"FINISHED"}
 

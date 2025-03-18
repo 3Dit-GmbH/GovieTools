@@ -167,7 +167,11 @@ def optimize_scene(gltf_export_param):
     bpy.ops.wm.save_mainfile()
     # Work on a copy of the scene
     bpy.ops.scene.new(type="FULL_COPY")
-    join_objects_without_visibility_property(gltf_export_param["use_selection"])
+    if "use_selection" in gltf_export_param:
+        join_objects_without_visibility_property(gltf_export_param["use_selection"])
+    else:
+        join_objects_without_visibility_property(False)
+
     bpy.ops.export_scene.gltf(**gltf_export_param)
     bpy.ops.scene.delete()
     bpy.ops.wm.open_mainfile(filepath=bpy.data.filepath)
