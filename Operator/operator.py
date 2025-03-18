@@ -1,8 +1,4 @@
-import os
-import subprocess
-
-import addon_utils
-import bpy
+import bpy  # type: ignore
 from pathlib import Path
 
 from ..Functions import functions

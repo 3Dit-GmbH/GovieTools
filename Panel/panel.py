@@ -1,4 +1,4 @@
-import bpy
+import bpy  # type: ignore
 
 from ..Functions import gui_functions
 from ..Properties import properties

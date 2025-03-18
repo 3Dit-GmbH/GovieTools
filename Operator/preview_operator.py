@@ -1,7 +1,6 @@
-import os
 from pathlib import Path
 
-import bpy
+import bpy  # type: ignore
 
 from ..Functions import functions
 

@@ -1,10 +1,8 @@
-import fnmatch
-import os
 from pathlib import Path
 import glob
 
-import bpy
-from bpy.props import (
+import bpy  # type: ignore
+from bpy.props import (  # type: ignore
     BoolProperty,
     EnumProperty,
     FloatProperty,

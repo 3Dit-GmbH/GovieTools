@@ -1,11 +1,10 @@
-import json
 import os
 import signal
 import subprocess
 import sys
 from pathlib import Path
 
-import bpy
+import bpy  # type: ignore
 
 addon_dir = ""
 server_pid = None
