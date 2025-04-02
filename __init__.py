@@ -29,7 +29,7 @@ bl_info = {
     "author": "Lorenz Wieseke, 3D Interaction Technologies GmbH (contact@govie.de)",
     "description": "Transform your model into a web-optimized GLB file for use in the Govie Editor.",
     "blender": (4, 2, 0),
-    "version": (1, 0, 17),
+    "version": (1, 0, 18),
     "location": "View 3D > Property Panel (N-Key in 3D View)",
     "warning": "",
     "category": "Scene",

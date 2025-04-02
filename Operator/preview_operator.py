@@ -22,8 +22,10 @@ class GOVIE_Preview_Operator(bpy.types.Operator):
 
         # get export settings
         glb_filename = context.scene.export_settings.glb_filename
+        if not glb_filename.endswith(".glb"):
+            glb_filename = "{}.glb".format(glb_filename)
 
-        if blend_path.joinpath(glb_filename).parent.exists():
+        if blend_path.joinpath(glb_filename).exists():
             return True
         else:
             return False

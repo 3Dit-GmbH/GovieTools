@@ -39,9 +39,9 @@ def start_server(glb_file_path, port):
     if server_pid is not None:
         stop_server()
 
-    server_file_path = os.path.join(addon_dir, "Server", "server.py")
+    server_file_path = Path(addon_dir, "Server", "server.py")
 
-    sub_args = [Path(sys.executable)]
+    sub_args = [str(Path(sys.executable))]
 
     if hasattr(bpy.app, "python_args"):
         for a in bpy.app.python_args:
@@ -49,7 +49,7 @@ def start_server(glb_file_path, port):
     else:
         sub_args.append("-I")
 
-    sub_args.append(server_file_path)
+    sub_args.append(str(server_file_path))
     sub_args.append(glb_file_path)
     sub_args.append(str(port))
 

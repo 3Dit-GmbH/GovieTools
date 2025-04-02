@@ -30,7 +30,9 @@ class GOVIE_open_export_folder_Operator(bpy.types.Operator):
         glb_filename = context.scene.export_settings.glb_filename
 
         bpy.ops.wm.url_open(
-            url=str(blend_path.joinpath(glb_filename).parent.absolute())
+            url="file://{}".format(
+                str(blend_path.joinpath(glb_filename).parent.absolute())
+            )
         )
 
         return {"FINISHED"}
