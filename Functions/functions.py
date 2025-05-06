@@ -91,22 +91,29 @@ def get_or_create_joined_collection(scene):
     return joined_collection
 
 
-def has_material_variants(mesh):
-    return bool(mesh.gltf2_variant_pointer)
+def has_material_variants(meshdata):
+    if not hasattr(meshdata, "gltf2_variant_mesh_data"):
+        return False
+
+    if len(meshdata.gltf2_variant_mesh_data) == 0:
+        return False
+
+    return True
 
 
-def join_objects_without_visibility_property(export_selected):
+def join_objects_without_visibility_property(export_only_visible, export_selected):
     current_scene = bpy.context.scene
 
-    # Only visible objects get exported
-    invisible_objects = []
+    # If set, only visible objects get exported
+    if export_only_visible:
+        invisible_objects = []
 
-    for o in current_scene.objects:
-        if not o.visible_get():
-            invisible_objects.append(o)
+        for o in current_scene.objects:
+            if not o.visible_get():
+                invisible_objects.append(o)
 
-    for o in invisible_objects:
-        bpy.data.objects.remove(o)
+        for o in invisible_objects:
+            bpy.data.objects.remove(o)
 
     # If set, export only objects that are selected
     if export_selected:
@@ -159,6 +166,7 @@ def join_objects_without_visibility_property(export_selected):
             break
 
     bpy.ops.object.join()
+    bpy.ops.object.select_all(action="SELECT")
     return True
 
 
@@ -166,10 +174,16 @@ def optimize_scene(gltf_export_param):
     bpy.ops.wm.save_mainfile()
     # Work on a copy of the scene
     bpy.ops.scene.new(type="FULL_COPY")
+    use_visible = False
+    use_selection = False
+    if "use_visible" in gltf_export_param:
+        use_visible = gltf_export_param["use_visible"]
     if "use_selection" in gltf_export_param:
-        join_objects_without_visibility_property(gltf_export_param["use_selection"])
-    else:
-        join_objects_without_visibility_property(False)
+        use_selection = gltf_export_param["use_selection"]
+
+    join_objects_without_visibility_property(
+        export_only_visible=use_visible, export_selected=use_selection
+    )
 
     bpy.ops.export_scene.gltf(**gltf_export_param)
     bpy.ops.scene.delete()
