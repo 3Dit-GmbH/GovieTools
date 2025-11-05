@@ -211,6 +211,22 @@ class ANIM_PT_Main(GovieToolsPanel, bpy.types.Panel):
         )
 
 
+class ANIM_PT_Sub_ManageActions(GovieToolsPanel, bpy.types.Panel):
+    bl_parent_id = "ANIM_PT_Main"
+    bl_label = "Manage Actions"
+    bl_options = {"DEFAULT_CLOSED"}
+
+    def draw(self, context):
+        anim_settings = context.scene.animation_settings
+        layout = self.layout
+        layout.prop(anim_settings, "action_name", text="Name")
+        layout.operator(
+            "scene.rename_action", text="Rename Action"
+        ).action_name = anim_settings.action_name
+        layout.operator("anim.merge_animation", text="Join Action")
+        layout.operator("anim.separate_slots", text="Separate Action")
+
+
 class ANIM_PT_Sub_Manage(GovieToolsPanel, bpy.types.Panel):
     bl_parent_id = "ANIM_PT_Main"
     bl_label = "Manage Animation"
@@ -287,7 +303,7 @@ class ANIM_PT_Sub_UVAnim(GovieToolsPanel, bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-        layout.operator("object.add_uv_anim", text="Add UV Animation")
+        layout.operator("object.add_uv_anim", text="Add UV Animation Helper")
 
 
 class VIS_PT_Main(GovieToolsPanel, bpy.types.Panel):
@@ -436,7 +452,13 @@ def register():
     bpy.utils.register_class(VIS_UL_List)
     bpy.utils.register_class(CLICK_UL_List)
     bpy.utils.register_class(ANIM_PT_Main)
-    bpy.utils.register_class(ANIM_PT_Sub_Manage)
+
+    # Use actions instead of NLA Strips for Animation merging
+    if bpy.app.version < (4, 4, 0):
+        bpy.utils.register_class(ANIM_PT_Sub_Manage)
+    else:
+        bpy.utils.register_class(ANIM_PT_Sub_ManageActions)
+
     bpy.utils.register_class(ANIM_PT_Sub_Particles)
     bpy.utils.register_class(ANIM_PT_Sub_Simplify)
     bpy.utils.register_class(ANIM_PT_Sub_UVAnim)
@@ -454,7 +476,13 @@ def unregister():
     bpy.utils.unregister_class(VIS_UL_List)
     bpy.utils.unregister_class(CLICK_UL_List)
     bpy.utils.unregister_class(ANIM_PT_Main)
-    bpy.utils.unregister_class(ANIM_PT_Sub_Manage)
+
+    # Use actions instead of NLA Strips for Animation merging
+    if bpy.app.version < (4, 4, 0):
+        bpy.utils.unregister_class(ANIM_PT_Sub_Manage)
+    else:
+        bpy.utils.unregister_class(ANIM_PT_Sub_ManageActions)
+
     bpy.utils.unregister_class(ANIM_PT_Sub_Particles)
     bpy.utils.unregister_class(ANIM_PT_Sub_Simplify)
     bpy.utils.unregister_class(ANIM_PT_Sub_UVAnim)

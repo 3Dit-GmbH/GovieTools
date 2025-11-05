@@ -82,13 +82,41 @@ class RenameNLAAnimationOperator(bpy.types.Operator):
         return {"FINISHED"}
 
 
+class RenameActionOperator(bpy.types.Operator):
+    bl_idname = "scene.rename_action"
+    bl_label = "Rename Action"
+    bl_description = "Rename Action on active object"
+    bl_options = {"REGISTER"}
+
+    action_name: bpy.props.StringProperty()
+    index = 0
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def execute(self, context):
+        active_object = context.active_object
+        active_object.animation_data.action.name = self.action_name
+
+        return {"FINISHED"}
+
+
 def register():
-    bpy.utils.register_class(JoinAnimationOperator)
-    bpy.utils.register_class(SeperateAnimationOperator)
-    bpy.utils.register_class(RenameNLAAnimationOperator)
+    # Use actions instead of NLA Strips for Animation merging
+    if bpy.app.version < (4, 4, 0):
+        bpy.utils.register_class(JoinAnimationOperator)
+        bpy.utils.register_class(SeperateAnimationOperator)
+        bpy.utils.register_class(RenameNLAAnimationOperator)
+    else:
+        bpy.utils.register_class(RenameActionOperator)
 
 
 def unregister():
-    bpy.utils.unregister_class(JoinAnimationOperator)
-    bpy.utils.unregister_class(SeperateAnimationOperator)
-    bpy.utils.unregister_class(RenameNLAAnimationOperator)
+    # Use actions instead of NLA Strips for Animation merging
+    if bpy.app.version < (4, 4, 0):
+        bpy.utils.unregister_class(JoinAnimationOperator)
+        bpy.utils.unregister_class(SeperateAnimationOperator)
+        bpy.utils.unregister_class(RenameNLAAnimationOperator)
+    else:
+        bpy.utils.unregister_class(RenameActionOperator)

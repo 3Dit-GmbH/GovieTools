@@ -27,7 +27,7 @@ bpy.types.Scene.object_index = IntProperty(
     name="Index for Visibility UI List", update=gui_functions.update_sel_item
 )
 bpy.types.Object.visibility_bool = BoolProperty(
-    name="Mapping for Property Value", update=gui_functions.remap_vis_prop
+    name="Mapping for Property Value", update=gui_functions.remap_vis_prop, default=True
 )
 bpy.types.Scene.open_verification_menu = BoolProperty(default=False)
 bpy.types.Scene.open_animation_manage = BoolProperty(default=False)
@@ -69,6 +69,7 @@ class AnimationSettings(bpy.types.PropertyGroup):
         items=simplify_keyframes_modes,
     )
     join_anim_name: StringProperty(name="Animation Name", default="Animation Name")
+    action_name: StringProperty(name="Action name", default="Action Name")
     decimate_ratio: FloatProperty(name="Decimate Ratio", default=0.1)
 
 

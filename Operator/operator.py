@@ -167,6 +167,8 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
 
             # pass class dictionary to the operator
             gltf_export_param = op.__dict__
+        else:
+            gltf_export_param["export_extras"] = True
 
         join_objects = context.scene.export_settings.join_objects
 
