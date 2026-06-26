@@ -154,19 +154,44 @@ class GOVIE_Quick_Export_GLB_Operator(bpy.types.Operator):
 
         # read preset parameters from file
         if preset_filepath:
-
-            class Container(object):
-                __slots__ = ("__dict__",)
-
-            op = Container()
             preset_file = open(preset_filepath, "r")
 
-            # storing the values from the preset on the class
             for line in preset_file.readlines()[3::]:
-                exec(line, globals(), locals())
+                preset_key = line.split("op.")[1].split(" = ")[0]
+                preset_value = line.split("op.")[1].split(" = ")[1].rstrip()
 
-            # pass class dictionary to the operator
-            gltf_export_param = op.__dict__
+                if preset_value.startswith("'") and preset_value.endswith("'"):
+                    # value is a string
+                    gltf_export_param[preset_key] = preset_value[1:-1]
+                    continue
+
+                if preset_value == "True":
+                    # value is a bool
+                    gltf_export_param[preset_key] = True
+                    continue
+
+                if preset_value == "False":
+                    # value is a bool
+                    gltf_export_param[preset_key] = False
+                    continue
+
+                try:
+                    preset_value_converted = int(preset_value)
+                    # if no error is thrown its an int
+                    gltf_export_param[preset_key] = preset_value_converted
+                    continue
+                except ValueError:
+                    try:
+                        # should be a float
+                        preset_value_converted = float(preset_value)
+                        gltf_export_param[preset_key] = preset_value_converted
+                    except ValueError:
+                        print(
+                            "Could not convert preset parameter from gltf preset at line: {}".format(
+                                line
+                            )
+                        )
+
         else:
             gltf_export_param["export_extras"] = True
 
