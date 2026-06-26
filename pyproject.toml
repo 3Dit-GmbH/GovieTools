@@ -1,6 +1,6 @@
 [project]
 name = "govietools"
-version = "1.0.20"
+version = "1.0.21"
 description = "Optimize your model for use in the Govie Editor"
 readme = "README.md"
 requires-python = ">=3.11.13"
